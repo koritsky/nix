@@ -15,6 +15,11 @@
     "/usr/local/cuda-12.2/bin"
   ];
 
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
@@ -37,7 +42,7 @@
       theme = "robbyrussell";
     };
 
-    initExtra = ''
+    initContent = ''
       export LD_LIBRARY_PATH="/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH"
       export LD_LIBRARY_PATH="/home/nikita/rmind/.venv/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH"
 
@@ -61,6 +66,7 @@
       [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
       [ -f "$HOME/.iterm2_shell_integration.zsh" ] && source "$HOME/.iterm2_shell_integration.zsh"
       [ -f ~/.secrets.zsh ] && source ~/.secrets.zsh
+
     '';
   };
 }
