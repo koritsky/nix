@@ -15,6 +15,13 @@
     "/usr/local/cuda-12.2/bin"
   ];
 
+  programs.git.enable = true;
+  programs.fzf.enable = true;
+  programs.helix.enable = true;
+  programs.lazygit.enable = true;
+  programs.zellij.enable = true;
+  programs.uv.enable = true;
+
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;
