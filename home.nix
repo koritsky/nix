@@ -41,6 +41,7 @@
       ntop = "nvitop -m";
       y = "yazi";
       ysudo = "sudo yazi";
+      nup = "git -C ~/nix pull && home-manager switch --flake ~/nix#server-linux";
     };
 
     oh-my-zsh = {
