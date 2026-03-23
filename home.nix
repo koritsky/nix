@@ -4,7 +4,6 @@
   programs.home-manager.enable = true;
 
   home.sessionVariables = {
-    EDITOR = "hx";
     AWS_VAULT_BACKEND = "file";
     PYTHONBREAKPOINT = "pudb.set_trace";
     NVM_DIR = "$HOME/.nvm";
@@ -15,12 +14,59 @@
     "/usr/local/cuda-12.2/bin"
   ];
 
-  programs.git.enable = true;
+  programs.atuin.enable = true;
+  programs.bat.enable = true;
   programs.fzf.enable = true;
-  programs.helix.enable = true;
+  programs.helix = {
+    enable = true;
+    defaultEditor = true;
+    settings = {
+      theme = "dracula";
+      editor = {
+        auto-save = true;
+        true-color = true;
+        idle-timeout = 0;
+        completion-trigger-len = 1;
+        statusline = {
+          left = [ "mode" "spinner" "file-name" "read-only-indicator" "file-modification-indicator" ];
+          center = [ ];
+          right = [ "diagnostics" "version-control" ];
+        };
+        indent-guides = {
+          render = true;
+          skip-levels = 2;
+        };
+        soft-wrap.enable = true;
+        file-picker.hidden = false;
+      };
+      keys.select = {
+        k = [ "extend_line_up" "extend_to_line_bounds" ];
+        j = [ "extend_line_down" "extend_to_line_bounds" ];
+      };
+      keys.normal = {
+        C-k = "jump_forward";
+        C-j = "jump_backward";
+        A-S-h = "jump_view_left";
+        A-S-l = "jump_view_right";
+      };
+    };
+  };
   programs.lazygit.enable = true;
-  programs.zellij.enable = true;
   programs.uv.enable = true;
+  programs.yazi.enable = true;
+  programs.zellij.enable = true;
+
+  programs.git = {
+    enable = true;
+    userName = "koritsky";
+    userEmail = "koritcky@gmail.com";
+    delta.enable = true;
+    lfs.enable = true;
+    extraConfig = {
+      merge.conflictstyle = "diff3";
+      diff.colorMoved = "default";
+    };
+  };
 
   programs.zoxide = {
     enable = true;
@@ -71,7 +117,6 @@
       [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
       [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
       [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-      [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
       [ -f "$HOME/.iterm2_shell_integration.zsh" ] && source "$HOME/.iterm2_shell_integration.zsh"
       [ -f ~/.secrets.zsh ] && source ~/.secrets.zsh
 
