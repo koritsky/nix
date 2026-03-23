@@ -1,13 +1,20 @@
 {
   description = "Shared CLI environment";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+  nixConfig = {
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    home-manager.url = "github:nix-community/home-manager/master";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents.inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  outputs = { nixpkgs, home-manager, llm-agents, ... }:
     let
       mkHome = system: username: homeDirectory:
         home-manager.lib.homeManagerConfiguration {
@@ -15,6 +22,7 @@
             inherit system;
             config.allowUnfree = true;
           };
+          extraSpecialArgs = { inherit llm-agents; };
           modules = [
             ./home.nix
             {
