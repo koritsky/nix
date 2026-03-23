@@ -52,6 +52,11 @@
     };
   };
   programs.lazygit.enable = true;
+  programs.starship = {
+      enable = true;
+      settings.format = "$directory$git_branch$git_state$nix_shell$direnv$python\n$character";
+      settings.right_format = "$username$hostname";
+    };
   programs.uv.enable = true;
   programs.yazi.enable = true;
   programs.zellij.enable = true;
@@ -90,12 +95,6 @@
       nup = "git -C ~/nix pull && home-manager switch --flake ~/nix#server-linux";
     };
 
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" ];
-      theme = "robbyrussell";
-    };
-
     initContent = ''
       export LD_LIBRARY_PATH="/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH"
       export LD_LIBRARY_PATH="/home/nikita/rmind/.venv/lib/python3.12/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH"
@@ -112,9 +111,7 @@
         unset __conda_setup
       fi
 
-      [ -f ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme ] && source ~/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
-      [ -f ~/.p10k.zsh ] && source ~/.p10k.zsh
-      [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
       [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
       [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
       [ -f "$HOME/.iterm2_shell_integration.zsh" ] && source "$HOME/.iterm2_shell_integration.zsh"
