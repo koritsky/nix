@@ -185,7 +185,12 @@
       settings.right_format = "$username$hostname";
     };
   programs.uv.enable = true;
-  programs.yazi.enable = true;
+  programs.yazi = {
+    enable = true;
+    shellWrapperName = "y";
+  };
+
+  xdg.configFile."yazi/theme.toml".source = ./yazi-theme.toml;
   programs.zellij.enable = true;
   programs.delta.enable = true;
 
