@@ -7,6 +7,10 @@
     home-manager.enable = true;
     atuin.enable = true;
     bat.enable = true;
+    claude-code = {
+      enable = true;
+      package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+    };
     codex = {
       enable = true;
       package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
