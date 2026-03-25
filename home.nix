@@ -259,4 +259,6 @@
       '';
     };
   };
+
+  xdg.configFile."yazi/theme.toml".source = ./yazi-theme.toml;
 }
