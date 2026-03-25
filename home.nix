@@ -220,7 +220,15 @@
       shellWrapperName = "y";
     };
     zellij.enable = true;
-    delta.enable = true;
+    delta = {
+      enable = true;
+      options = {
+        side-by-side = true;
+        navigate = true;
+        line-numbers = true;
+        dark = true;
+      };
+    };
     git = {
       enable = true;
       settings = {
@@ -229,6 +237,8 @@
           name = "koritsky";
         };
         push.autoSetupRemote = true;
+        core.pager = "delta --side-by-side";
+        interactive.diffFilter = "delta --side-by-side --color-only";
       };
       lfs.enable = true;
     };
@@ -256,6 +266,10 @@
       initContent = ''
         [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
         [ -f ~/.secrets.zsh ] && source ~/.secrets.zsh
+
+        autoload -Uz edit-command-line
+        zle -N edit-command-line
+        bindkey '^Xe' edit-command-line
       '';
     };
   };
