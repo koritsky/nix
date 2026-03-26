@@ -1,7 +1,15 @@
-{ pkgs, lib, llm-agents, ... }:
+{
+  pkgs,
+  lib,
+  llm-agents,
+  ...
+}:
 
 {
-  home.packages = [ pkgs.just pkgs.nvitop ];
+  home.packages = [
+    pkgs.just
+    pkgs.nvitop
+  ];
 
   stylix = {
     enable = true;
@@ -15,8 +23,6 @@
       sizes.terminal = 14;
     };
   };
-
-  gtk.gtk4.theme = null;
 
   programs = {
     home-manager.enable = true;
@@ -250,7 +256,7 @@
       settings = {
         user = {
           email = "koritcky@gmail.com";
-          name = "koritsky";
+          name = "Nikita Koritskii";
         };
         push.autoSetupRemote = true;
         core.pager = "delta --side-by-side";
