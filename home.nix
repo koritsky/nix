@@ -1,7 +1,7 @@
 { pkgs, llm-agents, ... }:
 
 {
-  home.packages = [ pkgs.just ];
+  home.packages = [ pkgs.just pkgs.nvitop ];
 
   programs = {
     home-manager.enable = true;
@@ -259,7 +259,7 @@
         zlm = "zellij a main";
         zla = "zellij a --index 0";
         lg = "lazygit";
-        ntop = "nvitop -m";
+        ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
         y = "yazi";
         ysudo = "sudo yazi";
         nup = "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#server-linux";
