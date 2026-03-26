@@ -59,6 +59,8 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+      silent = true;
+      enableZshIntegration = true;
     };
     fd.enable = true;
     fzf.enable = true;
