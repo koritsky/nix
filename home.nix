@@ -1,7 +1,22 @@
-{ pkgs, llm-agents, ... }:
+{ pkgs, lib, llm-agents, ... }:
 
 {
   home.packages = [ pkgs.just pkgs.nvitop ];
+
+  stylix = {
+    enable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
+    autoEnable = true;
+    fonts = {
+      monospace = {
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
+      };
+      sizes.terminal = 14;
+    };
+  };
+
+  gtk.gtk4.theme = null;
 
   programs = {
     home-manager.enable = true;
@@ -69,7 +84,6 @@
       enable = true;
       defaultEditor = true;
       settings = {
-        theme = "dracula";
         editor = {
           auto-save = true;
           true-color = true;
@@ -276,5 +290,5 @@
     };
   };
 
-  xdg.configFile."yazi/theme.toml".source = ./yazi-theme.toml;
+  xdg.configFile."yazi/theme.toml".source = lib.mkForce ./yazi-theme.toml;
 }

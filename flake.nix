@@ -11,9 +11,11 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nixpkgs, home-manager, llm-agents, ... }:
+  outputs = { nixpkgs, home-manager, llm-agents, stylix, ... }:
     let
       mkHome = system: username: homeDirectory:
         home-manager.lib.homeManagerConfiguration {
@@ -23,6 +25,7 @@
           };
           extraSpecialArgs = { inherit llm-agents; };
           modules = [
+            stylix.homeModules.stylix
             ./home.nix
             {
               home.username = username;
