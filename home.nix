@@ -240,6 +240,16 @@
     yazi = {
       enable = true;
       shellWrapperName = "y";
+      keymap.mgr.prepend_keymap = [
+        {
+          on = [
+            "g"
+            "n"
+          ];
+          run = "cd /nasa/drives/yaak/data";
+          desc = "/nasa/drives/yaak/data";
+        }
+      ];
     };
     zellij.enable = true;
     delta = {
