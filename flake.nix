@@ -15,9 +15,17 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nixpkgs, home-manager, llm-agents, stylix, ... }:
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      llm-agents,
+      stylix,
+      ...
+    }:
     let
-      mkHome = system: username: homeDirectory:
+      mkHome =
+        system: username: homeDirectory:
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
@@ -28,14 +36,17 @@
             stylix.homeModules.stylix
             ./home.nix
             {
-              home.username = username;
-              home.homeDirectory = homeDirectory;
-              home.stateVersion = "25.05";
+              home = {
+                username = username;
+                homeDirectory = homeDirectory;
+                stateVersion = "26.05";
+              };
             }
           ];
         };
-    in {
+    in
+    {
       homeConfigurations."server-linux" = mkHome "x86_64-linux" "nikita" "/home/nikita";
-      homeConfigurations."server-mac"   = mkHome "aarch64-darwin" "nikitaak" "/Users/nikitaak";
+      homeConfigurations."server-mac" = mkHome "aarch64-darwin" "nikitaak" "/Users/nikitaak";
     };
 }
