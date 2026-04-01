@@ -298,9 +298,8 @@
 
       shellAliases = {
         zl = "zellij";
-        zlm = "zellij a main";
-        zla = "zellij a --index 0";
-        lg = "lazygit";
+        zlm = "zl a main";
+        zla = "zl a --index 0";
         ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
         ysudo = "sudo yazi";
         nup = "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#server-linux";
