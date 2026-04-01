@@ -7,8 +7,10 @@
 
 {
   home.packages = [
+    pkgs.jq
     pkgs.just
     pkgs.nvitop
+    pkgs.tealdeer
   ];
 
   stylix = {
@@ -82,6 +84,11 @@
       nix-direnv.enable = true;
       silent = true;
       enableZshIntegration = true;
+    };
+    eza = {
+      enable = true;
+      git = true;
+      icons = "auto";
     };
     fd.enable = true;
     fzf.enable = true;
@@ -240,6 +247,11 @@
     yazi = {
       enable = true;
       shellWrapperName = "y";
+      settings.mgr = {
+        show_symlink = true;
+        sort_by = "natural";
+        linemode = "size";
+      };
       keymap.mgr.prepend_keymap = [
         {
           on = [
@@ -290,7 +302,6 @@
         zla = "zellij a --index 0";
         lg = "lazygit";
         ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
-        y = "yazi";
         ysudo = "sudo yazi";
         nup = "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#server-linux";
       };
