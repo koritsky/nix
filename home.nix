@@ -31,7 +31,7 @@ in
 
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/dracula.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark.yaml";
     autoEnable = true;
     fonts = {
       monospace = {
@@ -120,7 +120,7 @@ in
       enable = true;
       defaultEditor = true;
       settings = {
-        theme = "zed_onedark";
+        theme = lib.mkForce "zed_onedark";
         editor = {
           auto-save = true;
           true-color = true;
@@ -326,7 +326,7 @@ in
         zla = "zl a --index 0";
         ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
         ysudo = "sudo yazi";
-        nup = "git -C ~/nix pull && nh home switch -b backup ~/nix";
+        nup = "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#server-linux";
       };
 
       initContent = ''
