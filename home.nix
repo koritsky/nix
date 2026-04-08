@@ -9,6 +9,7 @@
   home.packages = [
     pkgs.jq
     pkgs.just
+    pkgs.nh
     pkgs.nvitop
     pkgs.tealdeer
   ];
@@ -302,7 +303,7 @@
         zla = "zl a --index 0";
         ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
         ysudo = "sudo yazi";
-        nup = "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#server-linux";
+        nup = "git -C ~/nix pull && nh home switch -b backup ~/nix";
       };
 
       initContent = ''
