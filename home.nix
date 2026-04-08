@@ -1,16 +1,31 @@
 {
+  config,
   pkgs,
   lib,
   llm-agents,
   ...
 }:
 
+let
+  envSecrets = [
+    "aws-access-key-id"
+    "aws-secret-access-key"
+    "wandb-api-key"
+    "openai-api-key"
+  ];
+  secretToEnv = name: lib.toUpper (builtins.replaceStrings [ "-" ] [ "_" ] name);
+  exportSecrets = lib.concatMapStringsSep "\n" (
+    name: "export ${secretToEnv name}=$(cat ${config.sops.secrets.${name}.path})"
+  ) envSecrets;
+in
 {
   home.packages = [
+    pkgs.age
     pkgs.jq
     pkgs.just
     pkgs.nh
     pkgs.nvitop
+    pkgs.sops
     pkgs.tealdeer
   ];
 
@@ -25,6 +40,13 @@
       };
       sizes.terminal = 14;
     };
+  };
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+
+    secrets = lib.genAttrs envSecrets (_: { });
   };
 
   programs = {
@@ -308,7 +330,8 @@
 
       initContent = ''
         [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-        [ -f ~/.secrets.zsh ] && source ~/.secrets.zsh
+
+        ${exportSecrets}
 
         autoload -Uz edit-command-line
         zle -N edit-command-line

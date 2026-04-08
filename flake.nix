@@ -11,6 +11,8 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -20,6 +22,7 @@
       nixpkgs,
       home-manager,
       llm-agents,
+      sops-nix,
       stylix,
       ...
     }:
@@ -33,6 +36,7 @@
           };
           extraSpecialArgs = { inherit llm-agents; };
           modules = [
+            sops-nix.homeManagerModules.sops
             stylix.homeModules.stylix
             ./home.nix
             {
