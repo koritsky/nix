@@ -120,6 +120,7 @@ in
       enable = true;
       defaultEditor = true;
       settings = {
+        theme = "zed_onedark";
         editor = {
           auto-save = true;
           true-color = true;
