@@ -120,7 +120,7 @@ in
       enable = true;
       defaultEditor = true;
       settings = {
-        theme = lib.mkForce "zed_onedark";
+        theme = lib.mkForce "zedonedark";
         editor = {
           auto-save = true;
           true-color = true;
@@ -342,4 +342,5 @@ in
   };
 
   xdg.configFile."yazi/theme.toml".source = lib.mkForce ./yazi-theme.toml;
+  xdg.configFile."helix/themes/zedonedark.toml".source = ./zedonedark.toml;
 }
