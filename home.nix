@@ -70,7 +70,7 @@ in
       enable = true;
       package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
       settings = {
-        model = "gpt-5.4";
+        model = "gpt-5.5";
         model_reasoning_effort = "xhigh";
         plan_mode_reasoning_effort = "xhigh";
         personality = "pragmatic";
