@@ -310,6 +310,13 @@ in
       };
       lfs.enable = true;
     };
+    jujutsu = {
+      enable = true;
+      settings.user = {
+        email = "koritcky@gmail.com";
+        name = "Nikita Koritskii";
+      };
+    };
     zoxide = {
       enable = true;
       enableZshIntegration = true;
