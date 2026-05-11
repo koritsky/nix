@@ -29,6 +29,8 @@ in
     pkgs.tealdeer
   ];
 
+  home.activation.dconfSettings.data = lib.mkForce ":";
+
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark.yaml";
@@ -64,7 +66,7 @@ in
       enable = true;
       enableZshIntegration = true;
       settings = {
-        auto_sync = true;
+        auto_sync = false;
         sync_frequency = "5m";
         search_mode = "fuzzy";
         filter_mode = "global";
