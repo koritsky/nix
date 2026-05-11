@@ -29,8 +29,6 @@ in
     pkgs.tealdeer
   ];
 
-  home.activation.dconfSettings.data = lib.mkForce ":";
-
   stylix = {
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark.yaml";
