@@ -74,6 +74,43 @@ in
     claude-code = {
       enable = true;
       package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+      settings = {
+        model = "claude-opus-4-5";
+        permissions = {
+          defaultMode = "bypassPermissions";
+          allow = [
+            "Bash(*)"
+            "Read(**)"
+            "Edit(**)"
+            "Write(**)"
+            "MultiEdit(**)"
+            "Glob(**)"
+            "Grep(**)"
+            "LS(**)"
+            "WebFetch(*)"
+            "WebSearch(*)"
+            "Task(*)"
+          ];
+          deny = [];
+        };
+
+        statusLine = {
+          type = "command";
+          command = "bash ~/.claude/statusline.sh";
+        };
+
+        hooks = {
+          PreToolUse = [];
+          PostToolUse = [];
+          Stop = [];
+        };
+
+        autoUpdatesChannel = "stable";
+        outputStyle = "Concise";
+        skipWebFetchPreflight = true;
+        includeGitInstructions = true;
+        cleanupPeriodDays = 30;
+      };
     };
     codex = {
       enable = true;
