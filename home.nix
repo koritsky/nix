@@ -75,9 +75,9 @@ in
       enable = true;
       package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
       settings = {
-        model = "claude-opus-4-5";
+        model = "claude-opus-4-8";
         permissions = {
-          defaultMode = "acceptEdits";
+          defaultMode = "auto";
           allow = [
             # navigation & search
             "Bash(ls:*)"
@@ -85,12 +85,14 @@ in
             "Bash(grep:*)"
             "Bash(rg:*)"
             "Bash(cat:*)"
+            "Bash(sed:*)"
             "Bash(head:*)"
             "Bash(tail:*)"
             "Bash(wc:*)"
             "Bash(diff:*)"
             "Bash(which:*)"
             "Bash(echo:*)"
+            "Bash(cd:*)"
 
             # git (read + safe writes)
             "Bash(git status:*)"
@@ -117,6 +119,9 @@ in
             "Bash(nix build:*)"
             "Bash(nix flake:*)"
             "Bash(nix fmt:*)"
+            "Bash(just:*)"
+            "Bash(nvidia-smi:*)"
+
 
             # linting / formatting
             "Bash(ruff:*)"
