@@ -170,6 +170,7 @@ in
         outputStyle = "Concise";
         skipWebFetchPreflight = true;
         includeGitInstructions = true;
+        preferredNotifChannel = "iterm2";
         cleanupPeriodDays = 30;
       };
     };
