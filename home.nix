@@ -378,6 +378,9 @@ in
         sort_by = "natural";
         linemode = "size";
       };
+      plugins = {
+        inherit (pkgs.yaziPlugins) rsync;
+      };
       keymap.mgr.prepend_keymap = [
         {
           on = [
@@ -386,6 +389,11 @@ in
           ];
           run = "cd /nasa/drives/yaak/data";
           desc = "/nasa/drives/yaak/data";
+        }
+        {
+          on = [ "R" ];
+          run = "plugin rsync";
+          desc = "rsync";
         }
       ];
     };
