@@ -4,7 +4,11 @@ let
   envSecrets = import ../../lib/secrets.nix;
   secretToEnv = name: lib.toUpper (builtins.replaceStrings [ "-" ] [ "_" ] name);
   exportSecrets = lib.concatMapStringsSep "\n" (
-    name: "export ${secretToEnv name}=$(cat ${config.sops.secrets.${name}.path})"
+    name:
+    let
+      path = config.sops.secrets.${name}.path;
+    in
+    "[ -r ${path} ] && export ${secretToEnv name}=\"$(cat ${path})\""
   ) envSecrets;
 in
 {
