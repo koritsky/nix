@@ -145,5 +145,5 @@
     ];
   };
 
-  xdg.configFile."helix/themes/zedonedark.toml".source = ../files/zedonedark.toml;
+  xdg.configFile."helix/themes/zedonedark.toml".source = ../../files/zedonedark.toml;
 }

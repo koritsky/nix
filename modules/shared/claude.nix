@@ -106,6 +106,6 @@
 
   home.file.".claude/statusline.sh" = {
     executable = true;
-    source = ../files/statusline.sh;
+    source = ../../files/statusline.sh;
   };
 }

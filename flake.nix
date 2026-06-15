@@ -28,7 +28,7 @@
     }:
     let
       mkHome =
-        system: username: homeDirectory:
+        system: hostModule:
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
@@ -38,19 +38,15 @@
           modules = [
             sops-nix.homeManagerModules.sops
             stylix.homeModules.stylix
-            ./home.nix
-            {
-              home = {
-                username = username;
-                homeDirectory = homeDirectory;
-                stateVersion = "26.05";
-              };
-            }
+            hostModule
+            { home.stateVersion = "26.05"; }
           ];
         };
     in
     {
-      homeConfigurations."server-linux" = mkHome "x86_64-linux" "nikita" "/home/nikita";
-      homeConfigurations."server-mac" = mkHome "aarch64-darwin" "nikitaak" "/Users/nikitaak";
+      homeConfigurations = {
+        server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
+        laptop = mkHome "aarch64-darwin" ./hosts/laptop.nix;
+      };
     };
 }
