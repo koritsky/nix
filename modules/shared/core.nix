@@ -1,6 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
+  programs.zsh.shellAliases.nup =
+    "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
+
   home.packages = [
     pkgs.age
     pkgs.jq

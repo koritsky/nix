@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 {
   programs = {
@@ -6,8 +6,8 @@
       enable = true;
       settings = {
         user = {
-          email = "koritcky@gmail.com";
-          name = "Nikita Koritskii";
+          email = config.profile.email;
+          name = config.profile.gitName;
         };
         push.autoSetupRemote = true;
         core.pager = "delta --side-by-side";
@@ -27,8 +27,8 @@
     jujutsu = {
       enable = true;
       settings.user = {
-        email = "koritcky@gmail.com";
-        name = "Nikita Koritskii";
+        email = config.profile.email;
+        name = config.profile.gitName;
       };
     };
   };

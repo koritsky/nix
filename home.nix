@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./modules/profile.nix
     ./modules/shared/core.nix
     ./modules/shared/stylix.nix
     ./modules/shared/sops.nix
