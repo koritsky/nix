@@ -12,7 +12,7 @@
       approval_policy = "never";
       sandbox_mode = "danger-full-access";
       web_search = "live";
-      # suppress_unstable_features_warning = true;
+      suppress_unstable_features_warning = true;
       tui = {
         theme = "dracula";
         status_line = [
@@ -34,6 +34,10 @@
         runtime_metrics = true;
         shell_snapshot = true;
         unified_exec = true;
+        goals = true;
+        hooks = true;
+        memories = true;
+        undo = true;
       };
     };
   };
