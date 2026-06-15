@@ -90,6 +90,10 @@
           name = "just";
           auto-format = true;
         }
+        {
+          name = "markdown";
+          language-servers = [ "markdown-oxide" ];
+        }
       ];
       language-server = {
         ty = {
@@ -108,6 +112,9 @@
         nixd = {
           command = "${pkgs.nixd}/bin/nixd";
           args = [ "--semantic-tokens=true" ];
+        };
+        markdown-oxide = {
+          command = "${pkgs.markdown-oxide}/bin/markdown-oxide";
         };
         statix = {
           command = "${pkgs.efm-langserver}/bin/efm-langserver";
@@ -142,6 +149,7 @@
       efm-langserver
       statix
       yamlfmt
+      markdown-oxide
     ];
   };
 
