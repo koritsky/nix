@@ -1,5 +1,15 @@
 [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
 
+# Keep forwarded SSH agent usable inside persistent zellij sessions.
+# Each new SSH login re-points a stable symlink at the live forwarded socket,
+# so reattached panes (which cached the old, now-dead path) work again.
+# Guarded by $SSH_CONNECTION so it's a no-op locally (macOS Keychain agent).
+if [ -n "$SSH_CONNECTION" ] && [ -S "$SSH_AUTH_SOCK" ] \
+   && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]; then
+  ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+fi
+[ -S "$HOME/.ssh/ssh_auth_sock" ] && export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^Xe' edit-command-line
