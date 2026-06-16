@@ -101,6 +101,10 @@
       includeGitInstructions = true;
       preferredNotifChannel = "iterm2";
       cleanupPeriodDays = 30;
+      attribution = {
+        commit = "";
+        pr = "";
+      };
     };
   };
 
