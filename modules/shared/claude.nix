@@ -6,6 +6,7 @@
     package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
     settings = {
       model = "claude-opus-4-8";
+      effortLevel = "xhigh";
       permissions = {
         defaultMode = "auto";
         allow = [
