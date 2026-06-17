@@ -1,6 +1,30 @@
-{ pkgs, llm-agents, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  llm-agents,
+  ...
+}:
+
+let
+  # Claude Code writes runtime state (effort level, etc.) back into settings.json.
+  # The home-manager module links it as a read-only /nix/store symlink, so those
+  # writes fail silently and e.g. effortLevel never applies. Instead we disable the
+  # module's symlink and install a writable copy of the same generated file.
+  settingsFile = (pkgs.formats.json { }).generate "claude-code-settings.json" (
+    config.programs.claude-code.settings
+    // {
+      "$schema" = "https://json.schemastore.org/claude-code-settings.json";
+    }
+  );
+in
+{
+  home.file.".claude/settings.json".enable = lib.mkForce false;
+
+  home.activation.claudeWritableSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run install -D -m 644 ${settingsFile} "$HOME/.claude/settings.json"
+  '';
+
   programs.claude-code = {
     enable = true;
     package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
