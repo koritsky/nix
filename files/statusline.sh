@@ -6,6 +6,7 @@ input=$(cat)
 # Extract fields
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "?"')
 model=$(echo "$input" | jq -r '.model.display_name // "?"')
+effort=$(echo "$input" | jq -r '.effort.level // empty')
 branch=$(echo "$input" | jq -r '.workspace.repo | if . then .owner + "/" + .name else empty end')
 git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
@@ -36,8 +37,12 @@ elif [ -n "$branch" ]; then
     printf " ${GREEN}%s${RESET}" "$branch"
 fi
 
-# Model segment
-printf " ${PURPLE}%s${RESET}" "$model"
+# Model segment (with effort level when present, e.g. "Opus 4.8: xhigh")
+if [ -n "$effort" ]; then
+    printf " ${PURPLE}%s${RESET}${DIM}:${RESET} ${PURPLE}%s${RESET}" "$model" "$effort"
+else
+    printf " ${PURPLE}%s${RESET}" "$model"
+fi
 
 # Context usage segment
 if [ -n "$used_pct" ]; then
