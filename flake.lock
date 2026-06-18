@@ -363,7 +363,8 @@
         "llm-agents": "llm-agents",
         "nixpkgs": "nixpkgs_2",
         "sops-nix": "sops-nix",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "updog": "updog"
       }
     },
     "sops-nix": {
@@ -547,6 +548,27 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "updog": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781793692,
+        "narHash": "sha256-IPJAofW0s2aOzpQ8ofcSOhhevv+HQ0qEDLJz2cN2NHo=",
+        "ref": "main",
+        "rev": "5503f7bd6b923b7dd8f220b71b84250b8bb60369",
+        "revCount": 3,
+        "type": "git",
+        "url": "ssh://git@github.com/yaak-ai/updog"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.com/yaak-ai/updog"
       }
     },
     "utils": {

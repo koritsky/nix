@@ -17,6 +17,10 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+    # Fleet GPU dashboard + Slack alerting (private repo; SSH so it auths with
+    # the local key — github: would need a token).
+    updog.url = "git+ssh://git@github.com/yaak-ai/updog?ref=main";
+    updog.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -28,6 +32,7 @@
       sops-nix,
       stylix,
       deploy-rs,
+      updog,
       ...
     }:
     let
@@ -71,8 +76,24 @@
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
         laptop = mkHome "aarch64-darwin" ./hosts/laptop.nix;
         renate = mkHome "x86_64-linux" {
-          imports = [ ./hosts/server-linux.nix ];
+          imports = [
+            ./hosts/server-linux.nix
+            updog.homeModules.default
+          ];
           profile.secrets = false;
+          # renate is always-on and on the VPN — host the fleet GPU dashboard here.
+          services.updog = {
+            enable = true;
+            url = "http://renate:8088";
+            hosts = {
+              kitkat = "192.168.207.239";
+              sisyphos = "192.168.207.241";
+              renate = "192.168.207.246";
+              berghain = "192.168.207.244";
+              tresor = "192.168.207.242";
+              aboutblank = "192.168.207.247";
+            };
+          };
         };
       };
 
