@@ -81,19 +81,7 @@
             updog.homeModules.default
           ];
           profile.secrets = false;
-          # renate is always-on and on the VPN — host the fleet GPU dashboard here.
-          services.updog = {
-            enable = true;
-            url = "http://renate:8088";
-            hosts = {
-              kitkat = "192.168.207.239";
-              sisyphos = "192.168.207.241";
-              renate = "192.168.207.246";
-              berghain = "192.168.207.244";
-              tresor = "192.168.207.242";
-              aboutblank = "192.168.207.247";
-            };
-          };
+          services.updog.enable = true;
         };
       };
 
