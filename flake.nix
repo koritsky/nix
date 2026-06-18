@@ -15,15 +15,19 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
+    deploy-rs.url = "github:serokell/deploy-rs";
+    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
+      self,
       nixpkgs,
       home-manager,
       llm-agents,
       sops-nix,
       stylix,
+      deploy-rs,
       ...
     }:
     let
@@ -42,11 +46,38 @@
             { home.stateVersion = "26.05"; }
           ];
         };
+
+      mkEnvNode = host: hmConfig: {
+        hostname = host;
+        sshUser = "nikita";
+        sshOpts = [
+          "-o"
+          "ClearAllForwardings=yes"
+        ];
+        profiles.home = {
+          user = "nikita";
+          path = deploy-rs.lib.x86_64-linux.activate.home-manager hmConfig;
+          remoteBuild = true;
+          magicRollback = false;
+        };
+      };
     in
     {
       homeConfigurations = {
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
         laptop = mkHome "aarch64-darwin" ./hosts/laptop.nix;
+        renate = mkHome "x86_64-linux" {
+          imports = [ ./hosts/server-linux.nix ];
+          profile.secrets = false;
+        };
       };
+
+      deploy.nodes =
+        nixpkgs.lib.genAttrs [ "kitkat" "sisyphos" "berghain" "tresor" "aboutblank" ] (
+          host: mkEnvNode host self.homeConfigurations.server-linux
+        )
+        // {
+          renate = mkEnvNode "renate" self.homeConfigurations.renate;
+        };
     };
 }
