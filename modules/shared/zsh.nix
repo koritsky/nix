@@ -3,13 +3,17 @@
 let
   envSecrets = import ../../lib/secrets.nix;
   secretToEnv = name: lib.toUpper (builtins.replaceStrings [ "-" ] [ "_" ] name);
-  exportSecrets = lib.concatMapStringsSep "\n" (
-    name:
-    let
-      path = config.sops.secrets.${name}.path;
-    in
-    "[ -r ${path} ] && export ${secretToEnv name}=\"$(cat ${path})\""
-  ) envSecrets;
+  # Gated on profile.secrets: when secrets are disabled, config.sops.secrets is
+  # empty, so referencing it would error — lib.optionalString keeps it lazy.
+  exportSecrets = lib.optionalString config.profile.secrets (
+    lib.concatMapStringsSep "\n" (
+      name:
+      let
+        path = config.sops.secrets.${name}.path;
+      in
+      "[ -r ${path} ] && export ${secretToEnv name}=\"$(cat ${path})\""
+    ) envSecrets
+  );
 in
 {
   programs.zsh = {

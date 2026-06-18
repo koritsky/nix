@@ -22,6 +22,15 @@
       type = lib.types.str;
       description = "Display name used for git/jujutsu commits.";
     };
+    secrets = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether to provision sops secrets and export them in the shell.
+        Disable on hosts that don't have the age key (e.g. a NixOS box managed
+        by another flake where the key isn't provisioned yet).
+      '';
+    };
   };
 
   config.home = {
