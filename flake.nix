@@ -53,6 +53,10 @@
         sshOpts = [
           "-o"
           "ClearAllForwardings=yes"
+          # quiet ssh: ~/.ssh/config sets LogLevel VERBOSE, which spams
+          # "Authenticated to…/Transferred:" on every deploy.
+          "-o"
+          "LogLevel=ERROR"
         ];
         profiles.home = {
           user = "nikita";
