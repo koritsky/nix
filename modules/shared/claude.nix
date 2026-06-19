@@ -19,7 +19,9 @@ let
   );
 in
 {
-  home.file.".claude/settings.json".enable = lib.mkForce false;
+  # Key must match the module's own home.file entry ("${cfg.configDir}/settings.json",
+  # an absolute path) — disabling the relative ".claude/settings.json" no longer matches.
+  home.file."${config.programs.claude-code.configDir}/settings.json".enable = lib.mkForce false;
 
   home.activation.claudeWritableSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run install -D -m 644 ${settingsFile} "$HOME/.claude/settings.json"

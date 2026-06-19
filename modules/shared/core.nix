@@ -9,6 +9,7 @@
     pkgs.jq
     pkgs.just
     pkgs.nh
+    pkgs.prek
     pkgs.sops
     pkgs.tealdeer
   ];
