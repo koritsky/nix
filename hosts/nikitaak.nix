@@ -7,7 +7,7 @@
   ];
 
   profile = {
-    name = "laptop";
+    name = "nikitaak";
     username = "nikitaak";
     homeDirectory = "/Users/nikitaak";
     email = "koritcky@gmail.com";

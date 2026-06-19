@@ -74,7 +74,7 @@
     {
       homeConfigurations = {
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
-        laptop = mkHome "aarch64-darwin" ./hosts/laptop.nix;
+        nikitaak = mkHome "aarch64-darwin" ./hosts/nikitaak.nix;
         kortisky = mkHome "aarch64-darwin" ./hosts/kortisky.nix;
         renate = mkHome "x86_64-linux" {
           imports = [
