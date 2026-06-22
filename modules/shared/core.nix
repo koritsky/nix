@@ -39,6 +39,7 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+      silent = true; # no "direnv: loading/export …" chatter on cd
     };
     eza = {
       enable = true;
