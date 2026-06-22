@@ -43,6 +43,12 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+      # Auto-load .envrc under these trusted project roots (no `direnv allow`).
+      # Scoped on purpose — don't whitelist all of $HOME.
+      config.whitelist.prefix = [
+        "${config.home.homeDirectory}/rmind"
+        "${config.home.homeDirectory}/rbyte"
+      ];
     };
     eza = {
       enable = true;
