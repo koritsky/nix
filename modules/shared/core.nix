@@ -13,6 +13,10 @@
     accept-flake-config = true
   '';
 
+  # Silence direnv's per-cd "direnv: loading/export …" chatter. (programs.direnv
+  # `silent` is a no-op in this HM version; setting the env var directly works.)
+  home.sessionVariables.DIRENV_LOG_FORMAT = "";
+
   home.packages = [
     pkgs.age
     pkgs.jq
@@ -39,7 +43,6 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
-      silent = true; # no "direnv: loading/export …" chatter on cd
     };
     eza = {
       enable = true;
