@@ -4,6 +4,15 @@
   programs.zsh.shellAliases.nup =
     "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
 
+  # Auto-accept flake nixConfig (e.g. rmind/rbyte's extra-substituters) so
+  # direnv doesn't hang on the interactive accept prompt. Written directly:
+  # home-manager's nix.settings would require a `nix.package`, pulling a second
+  # nix into the profile — unwanted on these system/determinate-nix hosts.
+  # experimental-features etc. live in the system nix.conf, so this is additive.
+  home.file.".config/nix/nix.conf".text = ''
+    accept-flake-config = true
+  '';
+
   home.packages = [
     pkgs.age
     pkgs.jq
