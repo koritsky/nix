@@ -10,6 +10,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
     llm-agents.url = "github:numtide/llm-agents.nix";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -28,6 +31,8 @@
       self,
       nixpkgs,
       home-manager,
+      nix-darwin,
+      nix-homebrew,
       llm-agents,
       sops-nix,
       stylix,
@@ -36,6 +41,13 @@
       ...
     }:
     let
+      # Home-manager modules common to every host (standalone or via nix-darwin).
+      sharedHomeModules = [
+        sops-nix.homeManagerModules.sops
+        stylix.homeModules.stylix
+        { home.stateVersion = "26.05"; }
+      ];
+
       mkHome =
         system: hostModule:
         home-manager.lib.homeManagerConfiguration {
@@ -44,12 +56,7 @@
             config.allowUnfree = true;
           };
           extraSpecialArgs = { inherit llm-agents; };
-          modules = [
-            sops-nix.homeManagerModules.sops
-            stylix.homeModules.stylix
-            hostModule
-            { home.stateVersion = "26.05"; }
-          ];
+          modules = sharedHomeModules ++ [ hostModule ];
         };
 
       mkEnvNode = host: hmConfig: {
@@ -72,8 +79,38 @@
       };
     in
     {
+      # macOS machine — system + Homebrew + both users' home-manager, applied
+      # with `sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro`.
+      darwinConfigurations."Nikitas-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit llm-agents; };
+        modules = [
+          ./modules/darwin-system.nix
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            nix-homebrew = {
+              enable = true;
+              user = "kortisky"; # current owner of /opt/homebrew
+              autoMigrate = true; # adopt the existing brew install
+            };
+          }
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "hm-bak"; # handoff from standalone HM
+            home-manager.extraSpecialArgs = { inherit llm-agents; };
+            home-manager.sharedModules = sharedHomeModules;
+            home-manager.users.nikitaak = import ./hosts/nikitaak.nix;
+            home-manager.users.kortisky = import ./hosts/kortisky.nix;
+          }
+        ];
+      };
+
       homeConfigurations = {
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
+        # Mac users now deploy via darwinConfigurations above; kept as a
+        # standalone fallback during the nix-darwin transition.
         nikitaak = mkHome "aarch64-darwin" ./hosts/nikitaak.nix;
         kortisky = mkHome "aarch64-darwin" ./hosts/kortisky.nix;
         renate = mkHome "x86_64-linux" {

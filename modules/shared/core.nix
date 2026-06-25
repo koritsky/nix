@@ -1,8 +1,14 @@
 { pkgs, config, ... }:
 
 {
+  # Rebuild from the flake. On macOS the env is managed by nix-darwin (system +
+  # Homebrew + home-manager), so use darwin-rebuild; elsewhere it's standalone
+  # home-manager.
   programs.zsh.shellAliases.nup =
-    "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
+    if pkgs.stdenv.isDarwin then
+      "git -C ~/nix pull && sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro"
+    else
+      "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
 
   # Auto-accept flake nixConfig (e.g. rmind/rbyte's extra-substituters) so
   # direnv doesn't hang on the interactive accept prompt. Written directly:

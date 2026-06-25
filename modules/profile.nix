@@ -33,8 +33,10 @@
     };
   };
 
+  # mkDefault so the nix-darwin home-manager module (which sets these from the
+  # user name) can override; standalone home-manager still needs them set here.
   config.home = {
-    username = config.profile.username;
-    homeDirectory = config.profile.homeDirectory;
+    username = lib.mkDefault config.profile.username;
+    homeDirectory = lib.mkDefault config.profile.homeDirectory;
   };
 }
