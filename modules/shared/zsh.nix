@@ -21,6 +21,9 @@ in
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     enableCompletion = true;
+    # -i: skip insecure fpath dirs instead of prompting (the multi-user
+    # /opt/homebrew completion dir is owned by the other admin user).
+    completionInit = "autoload -Uz compinit && compinit -i";
 
     shellAliases = {
       zl = "zellij";

@@ -28,6 +28,11 @@
     ];
   };
 
+  # Don't run compinit in the system /etc/zshrc — home-manager handles it (with
+  # -i). Avoids the "insecure directories" prompt caused by the multi-user
+  # Homebrew (/opt/homebrew is owned by kortisky, group-writable for admin).
+  programs.zsh.enableGlobalCompInit = false;
+
   # Used by `darwin-rebuild` to track the schema; bump only per release notes.
   system.stateVersion = 6;
 }
