@@ -98,7 +98,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "hm-bak"; # handoff from standalone HM
+            home-manager.backupFileExtension = "pre-darwin"; # fresh ext: avoid colliding with stale *.hm-bak
             home-manager.extraSpecialArgs = { inherit llm-agents; };
             home-manager.sharedModules = sharedHomeModules;
             home-manager.users.nikitaak = import ./hosts/nikitaak.nix;
