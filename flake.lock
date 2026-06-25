@@ -615,11 +615,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782389083,
-        "narHash": "sha256-pQaZrc4FRqp+CoBJeffoHG7qdkJbY3ASllbLFQk967k=",
+        "lastModified": 1782391244,
+        "narHash": "sha256-uP/Y2j/qZhAwJWoDwhzlQ7XCxYNmWb47mK0DTLF67jM=",
         "ref": "main",
-        "rev": "8f6249a4ac2f8f5afecb162ab3b93f45f9727fa6",
-        "revCount": 32,
+        "rev": "adf156bf91a6a48938434a5b61f52077b432a38c",
+        "revCount": 34,
         "type": "git",
         "url": "ssh://git@github.com/yaak-ai/updog"
       },
