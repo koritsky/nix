@@ -245,5 +245,5 @@ shift-down = ["volume set 0", "mode main"]
 # if.app-id = "com.cron.electron"  # calendar
 # run = "move-node-to-workspace K"
 
-[workspace-to-monitor-force-assignment]
-S = 'built-in'
+# [workspace-to-monitor-force-assignment]
+# S = 'built-in'
