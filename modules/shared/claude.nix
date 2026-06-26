@@ -29,7 +29,13 @@ in
 
   programs.claude-code = {
     enable = true;
-    package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+    # llm-agents' claude-code is wrapped with wrap-buddy, which can't build on
+    # aarch64 — fall back to nixpkgs' (functionally identical) package there.
+    package =
+      if config.profile.llmAgents then
+        llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+      else
+        pkgs.claude-code;
     settings = {
       model = "claude-opus-4-8";
       effortLevel = "xhigh";

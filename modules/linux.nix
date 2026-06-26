@@ -15,7 +15,8 @@
   '';
 
   programs.zsh.shellAliases = {
-    ntop = "LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 nvitop -m";
+    # Debian/Ubuntu multiarch dir differs by arch (x86_64- vs aarch64-linux-gnu).
+    ntop = "LD_PRELOAD=/usr/lib/${pkgs.stdenv.hostPlatform.parsed.cpu.name}-linux-gnu/libnvidia-ml.so.1 nvitop -m";
   };
 
   programs.yazi.keymap.mgr.prepend_keymap = [

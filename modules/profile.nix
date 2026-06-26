@@ -31,6 +31,17 @@
         by another flake where the key isn't provisioned yet).
       '';
     };
+    llmAgents = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Whether to use the llm-agents.nix wrapped agents. When true, claude-code
+        comes from llm-agents and codex is installed. Disable on platforms where
+        llm-agents doesn't build — notably aarch64-linux, where its wrap-buddy
+        ELF patcher fails its self-test. When false, claude-code falls back to
+        nixpkgs' (functionally identical) package and codex is skipped.
+      '';
+    };
   };
 
   # mkDefault so the nix-darwin home-manager module (which sets these from the

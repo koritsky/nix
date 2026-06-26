@@ -59,24 +59,32 @@
           modules = sharedHomeModules ++ [ hostModule ];
         };
 
-      mkEnvNode = host: hmConfig: {
-        hostname = host;
-        sshUser = "nikita";
-        sshOpts = [
-          "-o"
-          "ClearAllForwardings=yes"
-          # quiet ssh: ~/.ssh/config sets LogLevel VERBOSE, which spams
-          # "Authenticated to…/Transferred:" on every deploy.
-          "-o"
-          "LogLevel=ERROR"
-        ];
-        profiles.home = {
-          user = "nikita";
-          path = deploy-rs.lib.x86_64-linux.activate.home-manager hmConfig;
-          remoteBuild = true;
-          magicRollback = false;
+      # system defaults to x86_64-linux (the bulk of the fleet); pass
+      # aarch64-linux for ARM boxes (e.g. the Jetson delta-dev1).
+      mkEnvNode =
+        {
+          host,
+          hmConfig,
+          system ? "x86_64-linux",
+        }:
+        {
+          hostname = host;
+          sshUser = "nikita";
+          sshOpts = [
+            "-o"
+            "ClearAllForwardings=yes"
+            # quiet ssh: ~/.ssh/config sets LogLevel VERBOSE, which spams
+            # "Authenticated to…/Transferred:" on every deploy.
+            "-o"
+            "LogLevel=ERROR"
+          ];
+          profiles.home = {
+            user = "nikita";
+            path = deploy-rs.lib.${system}.activate.home-manager hmConfig;
+            remoteBuild = true;
+            magicRollback = false;
+          };
         };
-      };
     in
     {
       # macOS machine — system + Homebrew + both users' home-manager, applied
@@ -113,6 +121,14 @@
         # standalone fallback during the nix-darwin transition.
         nikitaak = mkHome "aarch64-darwin" ./hosts/nikitaak.nix;
         kortisky = mkHome "aarch64-darwin" ./hosts/kortisky.nix;
+        # NVIDIA Jetson (aarch64 Ubuntu). Secrets off until the age key is on
+        # the box — flip profile.secrets once ~/.config/sops/age/keys.txt exists.
+        # llmAgents off: llm-agents' wrap-buddy ELF patcher fails on aarch64.
+        delta-dev1 = mkHome "aarch64-linux" {
+          imports = [ ./hosts/server-linux.nix ];
+          profile.secrets = false;
+          profile.llmAgents = false;
+        };
         renate = mkHome "x86_64-linux" {
           imports = [
             ./hosts/server-linux.nix
@@ -125,10 +141,21 @@
 
       deploy.nodes =
         nixpkgs.lib.genAttrs [ "kitkat" "sisyphos" "berghain" "tresor" "aboutblank" ] (
-          host: mkEnvNode host self.homeConfigurations.server-linux
+          host: mkEnvNode {
+            inherit host;
+            hmConfig = self.homeConfigurations.server-linux;
+          }
         )
         // {
-          renate = mkEnvNode "renate" self.homeConfigurations.renate;
+          renate = mkEnvNode {
+            host = "renate";
+            hmConfig = self.homeConfigurations.renate;
+          };
+          delta-dev1 = mkEnvNode {
+            host = "delta-dev1";
+            system = "aarch64-linux";
+            hmConfig = self.homeConfigurations.delta-dev1;
+          };
         };
     };
 }

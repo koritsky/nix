@@ -1,6 +1,12 @@
-{ pkgs, llm-agents, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  llm-agents,
+  ...
+}:
+
+lib.mkIf config.profile.llmAgents {
   programs.codex = {
     enable = true;
     package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
