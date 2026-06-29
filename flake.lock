@@ -465,11 +465,11 @@
         "tinted-zed": "tinted-zed"
       },
       "locked": {
-        "lastModified": 1782658900,
-        "narHash": "sha256-/s51VbBRGLH1NSjJ3AGhOGG8BXH/Jo+5JWMmaa2n+Jk=",
+        "lastModified": 1782748959,
+        "narHash": "sha256-pAfvjZUCaKnWvGnP7lnhzCqXGcB9IYlJq2tT5UfVNgY=",
         "owner": "danth",
         "repo": "stylix",
-        "rev": "1fbdd38c16645731b2bdc4f70170765f725a3735",
+        "rev": "a04ba47b73b4001f0eb93f05efa7fac9537c4a8f",
         "type": "github"
       },
       "original": {
@@ -615,11 +615,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782747578,
-        "narHash": "sha256-kJY1zKKevrOzmkLi4abDXFIWYc7OIg3P6BfpSsEqu0U=",
+        "lastModified": 1782749174,
+        "narHash": "sha256-T5q2X8XetgHaIGpa22ApAKYYxkkshTkoEdqHd6aWFQE=",
         "ref": "main",
-        "rev": "500e13903fdc83cc90726f6b5f69bbfdc58e26ae",
-        "revCount": 40,
+        "rev": "7b27675b1a43c10a9047c0956691705cdffc9271",
+        "revCount": 41,
         "type": "git",
         "url": "ssh://git@github.com/yaak-ai/updog"
       },

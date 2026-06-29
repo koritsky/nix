@@ -48,12 +48,30 @@
         { home.stateVersion = "26.05"; }
       ];
 
+      sharedOverlays = [
+        (_: prev: {
+          # afdko's test suite is broken on current nixpkgs-unstable (93 failures
+          # in addfeatures/makeotf). It's pulled in transitively by stylix's
+          # default emoji font (noto-fonts-color-emoji → nototools → afdko), so
+          # without this every build that includes the emoji font fails. The tool
+          # builds fine; only the checkPhase is broken — skip it. afdko lives in
+          # the python package set, so override it for every python via
+          # pythonPackagesExtensions.
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+            (_: pyprev: {
+              afdko = pyprev.afdko.overridePythonAttrs (_: { doCheck = false; });
+            })
+          ];
+        })
+      ];
+
       mkHome =
         system: hostModule:
         home-manager.lib.homeManagerConfiguration {
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
+            overlays = sharedOverlays;
           };
           extraSpecialArgs = { inherit llm-agents; };
           modules = sharedHomeModules ++ [ hostModule ];
@@ -94,6 +112,7 @@
         specialArgs = { inherit llm-agents; };
         modules = [
           ./modules/darwin-system.nix
+          { nixpkgs.overlays = sharedOverlays; }
           nix-homebrew.darwinModules.nix-homebrew
           {
             nix-homebrew = {
