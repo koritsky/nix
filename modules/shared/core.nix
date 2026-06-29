@@ -21,7 +21,16 @@
 
   # Silence direnv's per-cd "direnv: loading/export …" chatter. (programs.direnv
   # `silent` is a no-op in this HM version; setting the env var directly works.)
-  home.sessionVariables.DIRENV_LOG_FORMAT = "";
+  #
+  # Set it in envExtra (.zshenv, runs on every zsh) rather than
+  # home.sessionVariables: the latter lives behind hm-session-vars.sh's
+  # `__HM_SESS_VARS_SOURCED` once-guard, so a long-running zellij/tmux server
+  # started on an older generation exports that flag, and every new pane then
+  # short-circuits the guard and never picks up the var. envExtra is
+  # unconditional, so new shells get it even inside a stale multiplexer.
+  programs.zsh.envExtra = ''
+    export DIRENV_LOG_FORMAT=""
+  '';
 
   home.packages = [
     pkgs.age
