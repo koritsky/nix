@@ -17,6 +17,23 @@ let
       "$schema" = "https://json.schemastore.org/claude-code-settings.json";
     }
   );
+
+  # zellaude bridge (see modules/shared/zellaude.nix). Registered here rather than
+  # letting the plugin edit settings.json at runtime, which our activation would
+  # clobber every deploy. The event list mirrors the plugin's own installer.
+  zellaudeHook = "${config.home.homeDirectory}/.config/zellij/plugins/zellaude-hook.sh";
+  zellaudeHooks = lib.genAttrs [
+    "PreToolUse"
+    "PostToolUse"
+    "PostToolUseFailure"
+    "UserPromptSubmit"
+    "PermissionRequest"
+    "Notification"
+    "Stop"
+    "SubagentStop"
+    "SessionStart"
+    "SessionEnd"
+  ] (_: [ { hooks = [ { type = "command"; command = zellaudeHook; timeout = 5; async = true; } ]; } ]);
 in
 {
   # Key must match the module's own home.file entry ("${cfg.configDir}/settings.json",
@@ -39,6 +56,7 @@ in
     settings = {
       model = "claude-opus-4-8";
       effortLevel = "xhigh";
+      hooks = zellaudeHooks;
       permissions = {
         defaultMode = "auto";
         allow = [
@@ -132,7 +150,7 @@ in
       outputStyle = "Concise";
       skipWebFetchPreflight = true;
       includeGitInstructions = true;
-      preferredNotifChannel = "iterm2";
+      preferredNotifChannel = "iterm2_with_bell";
       cleanupPeriodDays = 30;
       attribution = {
         commit = "";

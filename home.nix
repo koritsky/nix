@@ -10,6 +10,7 @@
     ./modules/shared/git.nix
     ./modules/shared/helix.nix
     ./modules/shared/claude.nix
+    ./modules/shared/zellaude.nix
     ./modules/shared/codex.nix
   ];
 }
