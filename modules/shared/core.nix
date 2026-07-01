@@ -6,7 +6,7 @@
   # home-manager.
   programs.zsh.shellAliases.nup =
     if pkgs.stdenv.isDarwin then
-      "git -C ~/nix pull && sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro"
+      "sudo -v && git -C ~/nix pull && sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro"
     else
       "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
 
