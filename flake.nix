@@ -148,6 +148,13 @@
           profile.secrets = false;
           profile.llmAgents = false;
         };
+        # Sibling aarch64 delta box; same profile as delta-dev1 (no age key yet,
+        # llm-agents' wrap-buddy fails on aarch64).
+        delta-emc1 = mkHome "aarch64-linux" {
+          imports = [ ./hosts/server-linux.nix ];
+          profile.secrets = false;
+          profile.llmAgents = false;
+        };
         renate = mkHome "x86_64-linux" {
           imports = [
             ./hosts/server-linux.nix
@@ -174,6 +181,11 @@
             host = "delta-dev1";
             system = "aarch64-linux";
             hmConfig = self.homeConfigurations.delta-dev1;
+          };
+          delta-emc1 = mkEnvNode {
+            host = "delta-emc1";
+            system = "aarch64-linux";
+            hmConfig = self.homeConfigurations.delta-emc1;
           };
         };
     };
