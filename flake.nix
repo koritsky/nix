@@ -59,7 +59,9 @@
           # pythonPackagesExtensions.
           pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
             (_: pyprev: {
-              afdko = pyprev.afdko.overridePythonAttrs (_: { doCheck = false; });
+              afdko = pyprev.afdko.overridePythonAttrs (_: {
+                doCheck = false;
+              });
             })
           ];
         })
@@ -76,6 +78,13 @@
           extraSpecialArgs = { inherit llm-agents; };
           modules = sharedHomeModules ++ [ hostModule ];
         };
+
+      # Shared config for the aarch64 delta boxes (delta-dev1/delta-emc1).
+      mkDelta = mkHome "aarch64-linux" {
+        imports = [ ./hosts/server-linux.nix ];
+        profile.secrets = false;
+        profile.llmAgents = false;
+      };
 
       # system defaults to x86_64-linux (the bulk of the fleet); pass
       # aarch64-linux for ARM boxes (e.g. the Jetson delta-dev1).
@@ -140,21 +149,12 @@
         # standalone fallback during the nix-darwin transition.
         nikitaak = mkHome "aarch64-darwin" ./hosts/nikitaak.nix;
         kortisky = mkHome "aarch64-darwin" ./hosts/kortisky.nix;
-        # NVIDIA Jetson (aarch64 Ubuntu). Secrets off until the age key is on
-        # the box — flip profile.secrets once ~/.config/sops/age/keys.txt exists.
-        # llmAgents off: llm-agents' wrap-buddy ELF patcher fails on aarch64.
-        delta-dev1 = mkHome "aarch64-linux" {
-          imports = [ ./hosts/server-linux.nix ];
-          profile.secrets = false;
-          profile.llmAgents = false;
-        };
-        # Sibling aarch64 delta box; same profile as delta-dev1 (no age key yet,
-        # llm-agents' wrap-buddy fails on aarch64).
-        delta-emc1 = mkHome "aarch64-linux" {
-          imports = [ ./hosts/server-linux.nix ];
-          profile.secrets = false;
-          profile.llmAgents = false;
-        };
+        # aarch64 delta boxes (NVIDIA Jetson / Ubuntu). Secrets off until the age
+        # key is on the box — flip profile.secrets once
+        # ~/.config/sops/age/keys.txt exists. llmAgents off: llm-agents'
+        # wrap-buddy ELF patcher fails on aarch64.
+        delta-dev1 = mkDelta;
+        delta-emc1 = mkDelta;
         renate = mkHome "x86_64-linux" {
           imports = [
             ./hosts/server-linux.nix
@@ -167,7 +167,8 @@
 
       deploy.nodes =
         nixpkgs.lib.genAttrs [ "kitkat" "sisyphos" "berghain" "tresor" "aboutblank" ] (
-          host: mkEnvNode {
+          host:
+          mkEnvNode {
             inherit host;
             hmConfig = self.homeConfigurations.server-linux;
           }

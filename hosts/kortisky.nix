@@ -10,7 +10,5 @@
     name = "kortisky";
     username = "kortisky";
     homeDirectory = "/Users/kortisky";
-    email = "koritcky@gmail.com";
-    gitName = "Nikita Koritskii";
   };
 }

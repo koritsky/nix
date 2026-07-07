@@ -3,17 +3,28 @@
 
 input=$(cat)
 
-# Extract fields
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // "?"')
-model=$(echo "$input" | jq -r '.model.display_name // "?"')
-effort=$(echo "$input" | jq -r '.effort.level // empty')
-branch=$(echo "$input" | jq -r '.workspace.repo | if . then .owner + "/" + .name else empty end')
-git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty')
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-sess_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-sess_reset=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
-week_pct=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-week_reset=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+# Extract all fields in one jq pass, one per line (empty string for absent
+# values). mapfile preserves empty fields — an IFS=$'\t' read would collapse
+# them, since tab is whitespace-IFS.
+mapfile -t f < <(
+    jq -r '[
+        .workspace.current_dir // .cwd // "?",
+        .model.display_name // "?",
+        .effort.level // "",
+        (.workspace.repo | if . then .owner + "/" + .name else "" end),
+        .workspace.git_worktree // "",
+        .context_window.used_percentage // "",
+        .rate_limits.five_hour.used_percentage // "",
+        .rate_limits.five_hour.resets_at // "",
+        .rate_limits.seven_day.used_percentage // "",
+        .rate_limits.seven_day.resets_at // ""
+    ] | .[]' <<<"$input"
+)
+cwd=${f[0]} model=${f[1]} effort=${f[2]} branch=${f[3]} git_worktree=${f[4]}
+used_pct=${f[5]} sess_pct=${f[6]} sess_reset=${f[7]} week_pct=${f[8]} week_reset=${f[9]}
+
+# Portable epoch → formatted time. BSD date (macOS) uses -r; GNU date uses -d @.
+fmt_ts() { date -r "$1" "+$2" 2>/dev/null || date -d "@$1" "+$2"; }
 
 # Shorten home directory
 cwd="${cwd/#$HOME/\~}"
@@ -69,7 +80,7 @@ if [ -n "$sess_pct" ]; then
     sess_int=${sess_pct%%.*}
     sess_c=$(usage_color "$sess_int")
     if [ -n "$sess_reset" ]; then
-        sess_at=" ${DIM}↻ $(date -d "@$sess_reset" +%H:%M)${RESET}"
+        sess_at=" ${DIM}↻ $(fmt_ts "$sess_reset" %H:%M)${RESET}"
     else
         sess_at=""
     fi
@@ -81,7 +92,7 @@ if [ -n "$week_pct" ]; then
     week_int=${week_pct%%.*}
     week_c=$(usage_color "$week_int")
     if [ -n "$week_reset" ]; then
-        week_at=" ${DIM}↻ $(date -d "@$week_reset" +%a)${RESET}"
+        week_at=" ${DIM}↻ $(fmt_ts "$week_reset" %a)${RESET}"
     else
         week_at=""
     fi
