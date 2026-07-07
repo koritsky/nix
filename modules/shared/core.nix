@@ -71,7 +71,11 @@
       icons = "auto";
     };
     fd.enable = true;
-    fzf.enable = true;
+    fzf = {
+      enable = true;
+      # Let Atuin own Ctrl-R; fzf keeps Ctrl-T / Alt-C.
+      historyWidget.command = "";
+    };
     gh.enable = true;
     htop.enable = true;
     lazygit.enable = true;
