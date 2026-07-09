@@ -69,6 +69,8 @@ in
           "Bash(git stash:*)"
           "Bash(git fetch:*)"
           "Bash(git pull:*)"
+          "Bash(git push:*)"
+          "Bash(git rebase:*)"
 
           # node / python / nix dev
           "Bash(npm run:*)"
@@ -119,8 +121,6 @@ in
           "Bash(chown:*)"
           "Bash(dd:*)"
           "Bash(mkfs:*)"
-          "Bash(git push:*)"
-          "Bash(git rebase:*)"
           "Bash(git reset --hard:*)"
         ];
       };
