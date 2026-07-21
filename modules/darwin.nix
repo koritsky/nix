@@ -12,6 +12,11 @@
     # hook falls back to osascript, whose notifications can't focus the pane.
     pkgs.terminal-notifier
 
+    # Paste clipboard images as PNG (used by clipssh). From nixpkgs rather than
+    # Homebrew — /opt/homebrew is owned by the other user, so `brew install`
+    # fails for us.
+    pkgs.pngpaste
+
     # Docker via colima instead of Docker Desktop/OrbStack: macOS has no native
     # container runtime, so colima runs a lightweight Linux VM that hosts the
     # docker daemon; docker-client is the CLI that talks to it. All in the
