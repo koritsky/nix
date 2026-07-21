@@ -25,6 +25,9 @@
     };
     casks = [
       "aerospace"
+      # OrbStack: lightweight Docker/Linux VM. Bundles the `docker` CLI, so no
+      # separate daemon setup — just launch OrbStack.app once.
+      "orbstack"
     ];
   };
 
