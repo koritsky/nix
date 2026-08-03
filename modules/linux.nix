@@ -5,6 +5,16 @@
     pkgs.nvitop
   ];
 
+  # No fonts on headless boxes — the terminal font comes from the SSH client.
+  # font-packages pulled nerd-fonts.jetbrains-mono plus stylix's default emoji
+  # font (noto-fonts-color-emoji) into every server closure: ~1 GB of transfer
+  # for nothing. The base16 themes (helix/zellij/bat) only need the font *name*,
+  # which stylix.fonts still provides.
+  stylix.targets = {
+    font-packages.enable = false;
+    fontconfig.enable = false;
+  };
+
   # Put multi-user Nix on PATH for NON-interactive SSH sessions. deploy-rs runs
   # `nix copy`/`nix-daemon` over ssh, which doesn't read the login profile, so
   # without this the daemon binary isn't found. No-op on NixOS (file absent,

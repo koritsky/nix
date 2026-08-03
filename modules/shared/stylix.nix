@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   stylix = {
@@ -13,8 +13,9 @@
     };
     autoEnable = false;
     targets = {
-      font-packages.enable = true;
-      fontconfig.enable = true;
+      # mkDefault: headless hosts turn these off in modules/linux.nix.
+      font-packages.enable = lib.mkDefault true;
+      fontconfig.enable = lib.mkDefault true;
       bat.enable = true;
       fzf.enable = true;
       starship.enable = true;

@@ -48,24 +48,27 @@
         { home.stateVersion = "26.05"; }
       ];
 
-      sharedOverlays = [
-        (_: prev: {
-          # afdko's test suite is broken on current nixpkgs-unstable (93 failures
-          # in addfeatures/makeotf). It's pulled in transitively by stylix's
-          # default emoji font (noto-fonts-color-emoji → nototools → afdko), so
-          # without this every build that includes the emoji font fails. The tool
-          # builds fine; only the checkPhase is broken — skip it. afdko lives in
-          # the python package set, so override it for every python via
-          # pythonPackagesExtensions.
-          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-            (_: pyprev: {
-              afdko = pyprev.afdko.overridePythonAttrs (_: {
-                doCheck = false;
-              });
+      # deploy-rs's activate binary is a cache miss for us: deploy-rs.inputs.nixpkgs
+      # follows ours, so their prebuilt binary doesn't match and every host
+      # compiles deploy-rs + ~60 crates from source (~4 min each). nixpkgs' own
+      # deploy-rs IS cached, so swap the binary in and keep deploy-rs's activation
+      # lib (upstream's documented `deployPkgs` pattern). The lib references
+      # `final.deploy-rs.deploy-rs`, hence the overlay fix-point rather than a
+      # plain attrset.
+      deployLib = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (
+        system:
+        (import nixpkgs {
+          inherit system;
+          overlays = [
+            deploy-rs.overlays.default
+            (_: prev: {
+              deploy-rs = prev.deploy-rs // {
+                inherit (nixpkgs.legacyPackages.${system}) deploy-rs;
+              };
             })
           ];
-        })
-      ];
+        }).deploy-rs.lib
+      );
 
       mkHome =
         system: hostModule:
@@ -73,7 +76,6 @@
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
-            overlays = sharedOverlays;
           };
           extraSpecialArgs = { inherit llm-agents; };
           modules = sharedHomeModules ++ [ hostModule ];
@@ -107,13 +109,40 @@
           ];
           profiles.home = {
             user = "nikita";
-            path = deploy-rs.lib.${system}.activate.home-manager hmConfig;
+            path = deployLib.${system}.activate.home-manager hmConfig;
             remoteBuild = true;
             magicRollback = false;
           };
         };
     in
     {
+      # Tools used by the justfile, taken from our locked nixpkgs because they are
+      # cached there. `github:serokell/deploy-rs#default` is a cache miss on both
+      # cache.nixos.org and deploy-rs.cachix.org, so `nix run`ing it compiled the
+      # CLI from source here on every deploy; this also keeps the CLI in lockstep
+      # with the activate binary that `deployLib` bakes into each profile.
+      packages.aarch64-darwin = {
+        inherit (nixpkgs.legacyPackages.aarch64-darwin) deploy-rs nix-output-monitor;
+      };
+
+      # Prebuilt binaries that live ONLY in cache.numtide.com. The servers'
+      # /etc/nix/nix.conf lists just cache.nixos.org, and deploy-rs's remote build
+      # substitutes using the *remote daemon's* config — client-side
+      # `--option extra-substituters` is silently ignored, and this flake's
+      # `nixConfig` never applies either because deploy-rs builds a bare .drv path
+      # with no flake in scope. So without `just seed` every host compiles codex
+      # from source (~12 min each). Only x86_64: the aarch64 delta boxes set
+      # profile.llmAgents = false and take claude-code from nixpkgs.
+      # unsafeDiscardStringContext: we want the path *names* to hand to `nix copy`,
+      # not the built paths — with the context attached, `nix eval --raw` tries to
+      # realise codex here on the Mac (and fails, it's x86_64-linux).
+      seedPaths.x86_64-linux = builtins.unsafeDiscardStringContext (
+        nixpkgs.lib.concatStringsSep " " [
+          "${llm-agents.packages.x86_64-linux.codex}"
+          "${llm-agents.packages.x86_64-linux.claude-code}"
+        ]
+      );
+
       # macOS machine — system + Homebrew + both users' home-manager, applied
       # with `sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro`.
       darwinConfigurations."Nikitas-MacBook-Pro" = nix-darwin.lib.darwinSystem {
@@ -121,7 +150,6 @@
         specialArgs = { inherit llm-agents; };
         modules = [
           ./modules/darwin-system.nix
-          { nixpkgs.overlays = sharedOverlays; }
           nix-homebrew.darwinModules.nix-homebrew
           {
             nix-homebrew = {
