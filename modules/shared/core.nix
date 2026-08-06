@@ -36,6 +36,7 @@
     pkgs.age
     pkgs.jq
     pkgs.just
+    pkgs.ncdu
     pkgs.nh
     pkgs.prek
     pkgs.sops
