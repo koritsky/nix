@@ -20,11 +20,17 @@ mapfile -t f < <(
         .rate_limits.seven_day.resets_at // ""
     ] | .[]' <<<"$input"
 )
-cwd=${f[0]} model=${f[1]} effort=${f[2]} branch=${f[3]} git_worktree=${f[4]}
+cwd=${f[0]} model=${f[1]} effort=${f[2]} repo=${f[3]} git_worktree=${f[4]}
 used_pct=${f[5]} sess_pct=${f[6]} sess_reset=${f[7]} week_pct=${f[8]} week_reset=${f[9]}
 
 # Portable epoch → formatted time. BSD date (macOS) uses -r; GNU date uses -d @.
 fmt_ts() { date -r "$1" "+$2" 2>/dev/null || date -d "@$1" "+$2"; }
+
+# Current branch — the payload carries the repo and worktree names but not the
+# branch, so ask git directly (--no-optional-locks keeps it from touching the
+# index). Detached HEAD reports nothing, so fall back to the short sha.
+branch=$(git -C "$cwd" --no-optional-locks branch --show-current 2>/dev/null)
+[ -n "$branch" ] || branch=$(git -C "$cwd" --no-optional-locks rev-parse --short HEAD 2>/dev/null)
 
 # Shorten home directory
 cwd="${cwd/#$HOME/\~}"
@@ -41,11 +47,16 @@ RESET='\033[0m'
 # Directory segment
 printf "${BLUE}%s${RESET}" "$cwd"
 
-# Git branch segment
-if [ -n "$git_worktree" ]; then
-    printf " ${GREEN}%s${RESET}" "$git_worktree"
-elif [ -n "$branch" ]; then
+# Git branch segment (worktree name appended when it differs from the branch)
+if [ -n "$branch" ]; then
     printf " ${GREEN}%s${RESET}" "$branch"
+    if [ -n "$git_worktree" ] && [ "$git_worktree" != "$branch" ]; then
+        printf " ${DIM}(%s)${RESET}" "$git_worktree"
+    fi
+elif [ -n "$git_worktree" ]; then
+    printf " ${GREEN}%s${RESET}" "$git_worktree"
+elif [ -n "$repo" ]; then
+    printf " ${GREEN}%s${RESET}" "$repo"
 fi
 
 # Model segment (with effort level when present, e.g. "Opus 4.8: xhigh")
