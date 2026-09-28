@@ -37,7 +37,7 @@ in
       else
         pkgs.claude-code;
     settings = {
-      model = "claude-opus-5";
+      model = "claude-opus-5-5";
       effortLevel = "high";
       permissions = {
         defaultMode = "auto";
