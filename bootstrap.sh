@@ -11,4 +11,4 @@ fi
 
 # First home-manager activation
 echo "Activating home-manager..."
-nix run home-manager -- switch -b backup --flake ~/nix#server-linux
+nix run --inputs-from ~/nix home-manager -- switch -b backup --flake ~/nix#server-linux

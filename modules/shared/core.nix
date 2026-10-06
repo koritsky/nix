@@ -47,7 +47,6 @@
     home-manager.enable = true;
     atuin = {
       enable = true;
-      enableZshIntegration = true;
       settings = {
         auto_sync = false;
         sync_frequency = "5m";
@@ -107,9 +106,20 @@
       ];
     };
     zellij.enable = true;
-    zoxide = {
-      enable = true;
-      enableZshIntegration = true;
+    zoxide.enable = true;
+  };
+
+  # Nothing else prunes this user's profiles: every switch/deploy leaves the
+  # previous generation (a few GiB of closure) behind. Weekly, drop generations
+  # older than two weeks and collect what that frees. Note the collection is
+  # store-wide: it also removes other users' *unrooted* paths on shared boxes.
+  services.home-manager.autoExpire = {
+    enable = true;
+    frequency = "weekly";
+    timestamp = "-14 days";
+    store = {
+      cleanup = true;
+      options = "--delete-older-than 14d";
     };
   };
 

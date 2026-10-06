@@ -1,11 +1,6 @@
 {
   description = "Shared CLI environment";
 
-  nixConfig = {
-    extra-substituters = [ "https://cache.numtide.com" ];
-    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
-  };
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     home-manager.url = "github:nix-community/home-manager/master";
@@ -13,7 +8,6 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    llm-agents.url = "github:numtide/llm-agents.nix";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix";
@@ -33,7 +27,6 @@
       home-manager,
       nix-darwin,
       nix-homebrew,
-      llm-agents,
       sops-nix,
       stylix,
       deploy-rs,
@@ -77,16 +70,17 @@
             inherit system;
             config.allowUnfree = true;
           };
-          extraSpecialArgs = { inherit llm-agents; };
           modules = sharedHomeModules ++ [ hostModule ];
         };
 
       # Shared config for the aarch64 delta boxes (delta-dev1/delta-emc1).
-      mkDelta = mkHome "aarch64-linux" {
-        imports = [ ./hosts/server-linux.nix ];
-        profile.secrets = false;
-        profile.llmAgents = false;
-      };
+      mkDelta =
+        name:
+        mkHome "aarch64-linux" {
+          imports = [ ./hosts/server-linux.nix ];
+          profile.name = name;
+          profile.secrets = false;
+        };
 
       # system defaults to x86_64-linux (the bulk of the fleet); pass
       # aarch64-linux for ARM boxes (e.g. the Jetson delta-dev1).
@@ -106,6 +100,14 @@
             # "Authenticated to…/Transferred:" on every deploy.
             "-o"
             "LogLevel=ERROR"
+            # Reuse one connection per host across deploy-rs's copy / build /
+            # activate steps instead of a fresh handshake for each.
+            "-o"
+            "ControlMaster=auto"
+            "-o"
+            "ControlPath=~/.ssh/cm-%C"
+            "-o"
+            "ControlPersist=10m"
           ];
           profiles.home = {
             user = "nikita";
@@ -125,29 +127,15 @@
         inherit (nixpkgs.legacyPackages.aarch64-darwin) deploy-rs nix-output-monitor;
       };
 
-      # Prebuilt binaries that live ONLY in cache.numtide.com. The servers'
-      # /etc/nix/nix.conf lists just cache.nixos.org, and deploy-rs's remote build
-      # substitutes using the *remote daemon's* config — client-side
-      # `--option extra-substituters` is silently ignored, and this flake's
-      # `nixConfig` never applies either because deploy-rs builds a bare .drv path
-      # with no flake in scope. So without `just seed` every host compiles codex
-      # from source (~12 min each). Only x86_64: the aarch64 delta boxes set
-      # profile.llmAgents = false and take claude-code from nixpkgs.
-      # unsafeDiscardStringContext: we want the path *names* to hand to `nix copy`,
-      # not the built paths — with the context attached, `nix eval --raw` tries to
-      # realise codex here on the Mac (and fails, it's x86_64-linux).
-      seedPaths.x86_64-linux = builtins.unsafeDiscardStringContext (
-        nixpkgs.lib.concatStringsSep " " [
-          "${llm-agents.packages.x86_64-linux.codex}"
-          "${llm-agents.packages.x86_64-linux.claude-code}"
-        ]
+      # `nix fmt`: nixfmt over the whole tree.
+      formatter = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-linux" "aarch64-linux" ] (
+        system: nixpkgs.legacyPackages.${system}.nixfmt-tree
       );
 
       # macOS machine — system + Homebrew + both users' home-manager, applied
       # with `sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro`.
       darwinConfigurations."Nikitas-MacBook-Pro" = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
-        specialArgs = { inherit llm-agents; };
         modules = [
           ./modules/darwin-system.nix
           nix-homebrew.darwinModules.nix-homebrew
@@ -163,7 +151,6 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "pre-darwin"; # fresh ext: avoid colliding with stale *.hm-bak
-            home-manager.extraSpecialArgs = { inherit llm-agents; };
             home-manager.sharedModules = sharedHomeModules;
             home-manager.users.nikitaak = import ./hosts/nikitaak.nix;
             home-manager.users.kortisky = import ./hosts/kortisky.nix;
@@ -173,21 +160,17 @@
 
       homeConfigurations = {
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
-        # Mac users now deploy via darwinConfigurations above; kept as a
-        # standalone fallback during the nix-darwin transition.
-        nikitaak = mkHome "aarch64-darwin" ./hosts/nikitaak.nix;
-        kortisky = mkHome "aarch64-darwin" ./hosts/kortisky.nix;
         # aarch64 delta boxes (NVIDIA Jetson / Ubuntu). Secrets off until the age
         # key is on the box — flip profile.secrets once
-        # ~/.config/sops/age/keys.txt exists. llmAgents off: llm-agents'
-        # wrap-buddy ELF patcher fails on aarch64.
-        delta-dev1 = mkDelta;
-        delta-emc1 = mkDelta;
+        # ~/.config/sops/age/keys.txt exists.
+        delta-dev1 = mkDelta "delta-dev1";
+        delta-emc1 = mkDelta "delta-emc1";
         renate = mkHome "x86_64-linux" {
           imports = [
             ./hosts/server-linux.nix
             updog.homeModules.default
           ];
+          profile.name = "renate";
           profile.secrets = false;
           services.updog.enable = true;
         };

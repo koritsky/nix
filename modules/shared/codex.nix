@@ -1,15 +1,8 @@
-{
-  pkgs,
-  lib,
-  config,
-  llm-agents,
-  ...
-}:
+{ ... }:
 
-lib.mkIf config.profile.llmAgents {
+{
   programs.codex = {
     enable = true;
-    package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex;
     settings = {
       model = "gpt-5.5";
       model_reasoning_effort = "xhigh";

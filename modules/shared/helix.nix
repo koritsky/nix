@@ -149,8 +149,6 @@
       ruff
       ty
       rust-analyzer
-      clippy
-      rustfmt
       nixfmt
       nixd
       efm-langserver
