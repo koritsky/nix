@@ -148,7 +148,7 @@ in
       outputStyle = "Concise";
       skipWebFetchPreflight = true;
       includeGitInstructions = true;
-      preferredNotifChannel = "iterm2_with_bell";
+      preferredNotifChannel = "notifications_disabled";
       cleanupPeriodDays = 30;
       attribution = {
         commit = "";
