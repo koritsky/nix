@@ -216,6 +216,22 @@
         "type": "github"
       }
     },
+    "homebrew-clawdboard": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1774958974,
+        "narHash": "sha256-B6SrYSDqhE7fQUKL1Pi4Ltwdox0YBtjFeerX4PMxZRI=",
+        "owner": "apocohq",
+        "repo": "homebrew-clawdboard",
+        "rev": "dd43e4ab781960cc4f05200693f26102bdcfe894",
+        "type": "github"
+      },
+      "original": {
+        "owner": "apocohq",
+        "repo": "homebrew-clawdboard",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -300,6 +316,7 @@
       "inputs": {
         "deploy-rs": "deploy-rs",
         "home-manager": "home-manager",
+        "homebrew-clawdboard": "homebrew-clawdboard",
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs",

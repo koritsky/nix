@@ -8,6 +8,11 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    # Homebrew tap for Clawdboard (menu bar monitor for Claude Code sessions).
+    homebrew-clawdboard = {
+      url = "github:apocohq/homebrew-clawdboard";
+      flake = false;
+    };
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix";
@@ -27,6 +32,7 @@
       home-manager,
       nix-darwin,
       nix-homebrew,
+      homebrew-clawdboard,
       sops-nix,
       stylix,
       deploy-rs,
@@ -144,6 +150,11 @@
               enable = true;
               user = "kortisky"; # current owner of /opt/homebrew
               autoMigrate = true; # adopt the existing brew install
+              # Third-party taps come from Nix: `brew tap` can't clone them from
+              # this account, because Library/Taps belongs to the owner above.
+              # Activation copies each one into place; the casks themselves are
+              # listed in modules/darwin-system.nix.
+              taps."apocohq/homebrew-clawdboard" = homebrew-clawdboard;
             };
           }
           home-manager.darwinModules.home-manager
