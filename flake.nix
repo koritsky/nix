@@ -106,14 +106,6 @@
             # "Authenticated to…/Transferred:" on every deploy.
             "-o"
             "LogLevel=ERROR"
-            # Reuse one connection per host across deploy-rs's copy / build /
-            # activate steps instead of a fresh handshake for each.
-            "-o"
-            "ControlMaster=auto"
-            "-o"
-            "ControlPath=~/.ssh/cm-%C"
-            "-o"
-            "ControlPersist=10m"
           ];
           profiles.home = {
             user = "nikita";

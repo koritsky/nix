@@ -94,9 +94,6 @@ git push
 nodes=${only_nodes:-$(nix eval --json .#deploy.nodes --apply builtins.attrNames | jq -r '.[]')}
 deploy=$(nix build --no-link --print-out-paths .#deploy-rs)/bin/deploy
 logdir=$(mktemp -d "${TMPDIR:-/tmp}/update-servers.XXXXXX")
-# Same options as sshOpts in flake.nix, so the reachability check below opens
-# the connection that deploy-rs then reuses.
-ssh_reuse=(-o ControlMaster=auto -o "ControlPath=~/.ssh/cm-%C" -o ControlPersist=10m)
 
 # One host: skip it if unreachable, otherwise deploy. Runs in the background,
 # one per host, so a slow or broken host neither delays nor aborts the others;
@@ -105,7 +102,7 @@ deploy_one() {
   local node=$1 start=$SECONDS
   # Fast reachability pre-check — a dead host fails in 5s instead of hanging
   # deploy-rs on a long SSH timeout. Node names resolve via ~/.ssh/config.
-  if ! ssh "${ssh_reuse[@]}" -o ConnectTimeout=5 -o BatchMode=yes "$node" true 2> /dev/null; then
+  if ! ssh -o ConnectTimeout=5 -o BatchMode=yes "$node" true 2> /dev/null; then
     echo skipped > "$logdir/$node.status"
     echo "⏭️  $node unreachable — skipped"
   # --skip-checks: deploy-rs's own check is `nix flake check`; the gate above
