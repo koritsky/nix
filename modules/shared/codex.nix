@@ -1,20 +1,12 @@
-{ config, lib, ... }:
+{ ... }:
 
-let
-  # config.toml is a read-only store symlink, so Codex can't persist the
-  # "trust this folder?" answer itself — declare trusted roots here instead.
-  trustedProjects = [
-    "${config.home.homeDirectory}/coppernic/coppernic-main"
-  ];
-in
 {
   programs.codex = {
     enable = true;
+    # Write config.toml as a real file (merged with what's there) instead of a
+    # read-only store symlink, so Codex can persist "trust this folder?" etc.
+    mutableSettings = true;
     settings = {
-      projects = lib.genAttrs trustedProjects (_: { trust_level = "trusted"; });
-      model = "gpt-5.5";
-      model_reasoning_effort = "xhigh";
-      plan_mode_reasoning_effort = "xhigh";
       personality = "pragmatic";
       approval_policy = "never";
       sandbox_mode = "danger-full-access";
