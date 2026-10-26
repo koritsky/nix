@@ -29,6 +29,30 @@
     ntop = "LD_PRELOAD=/usr/lib/${pkgs.stdenv.hostPlatform.parsed.cpu.name}-linux-gnu/libnvidia-ml.so.1 nvitop -m";
   };
 
+  # Fleet aliases so `ssh kitkat` works server-to-server, not just from the Mac.
+  # Auth rides the Mac's forwarded agent; ForwardAgent keeps it alive per hop.
+  programs.ssh = {
+    enable = true;
+    enableDefaultConfig = false;
+    settings =
+      builtins.mapAttrs
+        (_: HostName: {
+          inherit HostName;
+          User = "nikita";
+          ForwardAgent = true;
+        })
+        {
+          kitkat = "192.168.207.239";
+          sisyphos = "192.168.207.241";
+          renate = "192.168.207.246";
+          berghain = "192.168.207.244";
+          tresor = "192.168.207.242";
+          aboutblank = "192.168.207.247";
+          delta-dev1 = "192.168.144.35";
+          delta-emc1 = "172.30.0.40";
+        };
+  };
+
   programs.yazi.keymap.mgr.prepend_keymap = [
     {
       on = [
