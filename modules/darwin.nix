@@ -2,13 +2,13 @@
 
 let
   # clipssh — copy content to the local clipboard from inside an SSH session.
-  # Not in nixpkgs, so fetch the upstream script (pinned by hash; re-fetch +
-  # bump the hash when it changes) and wrap it so pngpaste is always on its
+  # Not in nixpkgs, so fetch the upstream script (pinned to a commit — a branch
+  # URL breaks the hash whenever upstream pushes) and wrap it so pngpaste is always on its
   # PATH regardless of the caller's environment. Lands in the nix profile bin
   # (already on PATH) — no ~/.local/bin, no ./install.sh.
   clipsshSrc = pkgs.fetchurl {
-    url = "https://raw.githubusercontent.com/samuellawrentz/clipssh/main/clipssh";
-    hash = "sha256-Ukhdx/geyuW3EVrvlwm22X/8Ghq65R0LAL3oHmRuqyA=";
+    url = "https://raw.githubusercontent.com/samuellawrentz/clipssh/99dc8c6779f02584288455051bc495c7a3bf0ed0/clipssh";
+    hash = "sha256-BbRnKKYeh8HnBbiAU3KBLG6gXDBfXR098uyNn0dXxKU=";
   };
   clipssh = pkgs.runCommandLocal "clipssh" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
     install -Dm755 ${clipsshSrc} $out/bin/clipssh
