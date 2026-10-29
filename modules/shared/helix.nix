@@ -92,10 +92,7 @@
         }
         {
           name = "markdown";
-          language-servers = [
-            "marksman"
-            "markdown-oxide"
-          ];
+          language-servers = [ "markdown-oxide" ];
         }
       ];
       language-server = {
@@ -118,10 +115,6 @@
         };
         markdown-oxide = {
           command = "${pkgs.markdown-oxide}/bin/markdown-oxide";
-        };
-        marksman = {
-          command = "${pkgs.marksman}/bin/marksman";
-          args = [ "server" ];
         };
         statix = {
           command = "${pkgs.efm-langserver}/bin/efm-langserver";
@@ -155,7 +148,6 @@
       statix
       yamlfmt
       markdown-oxide
-      marksman
     ];
   };
 
