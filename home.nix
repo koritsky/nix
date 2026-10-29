@@ -12,5 +12,6 @@
     ./modules/shared/claude.nix
     ./modules/shared/codex.nix
     ./modules/shared/herdr.nix
+    ./modules/shared/ghostty.nix
   ];
 }
