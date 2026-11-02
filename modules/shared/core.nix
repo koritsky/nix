@@ -28,8 +28,12 @@
   # started on an older generation exports that flag, and every new pane then
   # short-circuits the guard and never picks up the var. envExtra is
   # unconditional, so new shells get it even inside a stale multiplexer.
+  #
+  # TZ: the servers are standalone home-manager on Ubuntu, so the system zone
+  # isn't ours to set — this only covers our own shells and what they launch.
   programs.zsh.envExtra = ''
     export DIRENV_LOG_FORMAT=""
+    export TZ="Europe/Berlin"
   '';
 
   home.packages = [

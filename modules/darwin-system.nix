@@ -8,6 +8,8 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
   nixpkgs.config.allowUnfree = true;
 
+  time.timeZone = "Europe/Berlin";
+
   # Needed by home-manager (folded in below) and Homebrew.
   system.primaryUser = "nikitaak";
   users.users.nikitaak.home = "/Users/nikitaak";
