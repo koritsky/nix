@@ -26,6 +26,11 @@
     # Prebuilt AI CLI tools (herdr) from cache.numtide.com, newer than nixpkgs.
     # No nixpkgs follows: that would change the store paths and miss the cache.
     llm-agents.url = "github:numtide/llm-agents.nix";
+    # Prebuilt Rex + its home-manager module (services.rex runs the server on the
+    # Linux hosts, reachable over Rex's built-in Tailscale). Only the snapshot
+    # channel is published; flake.lock pins the exact release.
+    rex.url = "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz";
+    rex.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -41,6 +46,7 @@
       deploy-rs,
       updog,
       llm-agents,
+      rex,
       ...
     }:
     let
@@ -49,12 +55,9 @@
         sops-nix.homeManagerModules.sops
         stylix.homeModules.stylix
         { home.stateVersion = "26.05"; }
-        (
-          { pkgs, ... }:
-          {
-            programs.herdr.package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
-          }
-        )
+        ({ pkgs, ... }: {
+          programs.herdr.package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
+        })
       ];
 
       # deploy-rs's activate binary is a cache miss for us: deploy-rs.inputs.nixpkgs
@@ -86,8 +89,22 @@
             inherit system;
             config.allowUnfree = true;
           };
-          modules = sharedHomeModules ++ [ hostModule ];
+          # mkHome only builds the Linux servers; the Mac runs the Rex app.
+          modules = sharedHomeModules ++ [
+            rex.homeManagerModules.default
+            hostModule
+          ];
         };
+
+      # x86_64 GPU boxes. Each gets its own homeConfiguration (same
+      # server-linux.nix) so its Rex Tailscale node gets a unique name.
+      fleet = [
+        "kitkat"
+        "sisyphos"
+        "berghain"
+        "tresor"
+        "aboutblank"
+      ];
 
       # Shared config for the aarch64 delta boxes (delta-dev1/delta-emc1).
       mkDelta =
@@ -186,15 +203,23 @@
           profile.name = "renate";
           profile.secrets = false;
           services.updog.enable = true;
+          services.updog.slackChannel = "C07U0RHPM17"; # ml-up-dog
         };
-      };
+      }
+      // nixpkgs.lib.genAttrs fleet (
+        host:
+        mkHome "x86_64-linux" {
+          imports = [ ./hosts/server-linux.nix ];
+          profile.name = host;
+        }
+      );
 
       deploy.nodes =
-        nixpkgs.lib.genAttrs [ "kitkat" "sisyphos" "berghain" "tresor" "aboutblank" ] (
+        nixpkgs.lib.genAttrs fleet (
           host:
           mkEnvNode {
             inherit host;
-            hmConfig = self.homeConfigurations.server-linux;
+            hmConfig = self.homeConfigurations.${host};
           }
         )
         // {

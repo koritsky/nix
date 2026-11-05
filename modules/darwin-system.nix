@@ -10,6 +10,10 @@
 
   time.timeZone = "Europe/Berlin";
 
+  # Puts this Mac on the tailnet so Rex can reach the servers' Rex nodes
+  # (https://rex-<host>.<tailnet>.ts.net). First time: `sudo tailscale up`.
+  services.tailscale.enable = true;
+
   # Needed by home-manager (folded in below) and Homebrew.
   system.primaryUser = "nikitaak";
   users.users.nikitaak.home = "/Users/nikitaak";

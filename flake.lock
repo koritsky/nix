@@ -405,6 +405,23 @@
         "type": "github"
       }
     },
+    "rex": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793741575,
+        "narHash": "sha256-MfxrlfzGXlWjQsEZc3Rd0G+HJ3XyrBrdMUdLUYUrO5M=",
+        "type": "tarball",
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot/0.0.1793741575-g1b6654.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz"
+      }
+    },
     "root": {
       "inputs": {
         "deploy-rs": "deploy-rs",
@@ -414,6 +431,7 @@
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",
+        "rex": "rex",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
         "updog": "updog"
@@ -610,11 +628,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793630832,
-        "narHash": "sha256-66UDR3Jn5LpHuqGhj7TTaNUx9mpi0919UI4m6cp4ArM=",
+        "lastModified": 1793873550,
+        "narHash": "sha256-/4fYa57RbrAO2l1BjVqSMnUYhts+vlKMsb/cKgR40zU=",
         "ref": "main",
-        "rev": "7dd922ccf4801e2efc892ab81af81c5a4536130e",
-        "revCount": 74,
+        "rev": "c53d86a16eba93cdab4b38a28a61881dd3f9ddb1",
+        "revCount": 87,
         "type": "git",
         "url": "ssh://git@github.com/yaak-ai/updog"
       },
