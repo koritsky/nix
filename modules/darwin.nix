@@ -1,6 +1,12 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
+  # `rex` CLI from the Rex app. The app bundles it but doesn't put it on PATH;
+  # Versions/Current follows app updates, so the CLI always matches the app.
+  rexCli = pkgs.writeShellScriptBin "rex" ''
+    exec "${config.home.homeDirectory}/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex" "$@"
+  '';
+
   # clipssh — copy content to the local clipboard from inside an SSH session.
   # Not in nixpkgs, so fetch the upstream script (pinned to a commit — a branch
   # URL breaks the hash whenever upstream pushes) and wrap it so pngpaste is always on its
@@ -34,6 +40,9 @@ in
 
     # clipssh (declared in the let block above).
     clipssh
+
+    # rex CLI wrapper (declared in the let block above).
+    rexCli
 
     # Docker via colima instead of Docker Desktop/OrbStack: macOS has no native
     # container runtime, so colima runs a lightweight Linux VM that hosts the
