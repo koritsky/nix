@@ -227,16 +227,10 @@
             host = "renate";
             hmConfig = self.homeConfigurations.renate;
           };
-          delta-dev1 = mkEnvNode {
-            host = "delta-dev1";
-            system = "aarch64-linux";
-            hmConfig = self.homeConfigurations.delta-dev1;
-          };
-          delta-emc1 = mkEnvNode {
-            host = "delta-emc1";
-            system = "aarch64-linux";
-            hmConfig = self.homeConfigurations.delta-emc1;
-          };
+          # delta-dev1 / delta-emc1 are left out of `just deploy` for now (not
+          # reachable from here); their homeConfigurations stay buildable.
+          # Re-add with: mkEnvNode { host = "delta-dev1"; system =
+          # "aarch64-linux"; hmConfig = self.homeConfigurations.delta-dev1; }
         };
     };
 }
