@@ -4,6 +4,7 @@
   imports = [
     ../home.nix
     ../modules/darwin.nix
+    ../modules/darwin-rex.nix
   ];
 
   profile = {
