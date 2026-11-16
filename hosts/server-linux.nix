@@ -62,7 +62,9 @@
     }
   );
 
-  # Keep user services (Rex) running after logout. Enabling lingering for
+  # Keep user services (Rex) running after logout. twix already sets
+  # `linger = true` on the NixOS servers, so this only acts on the Ubuntu ones
+  # (berghain, delta-*). Enabling lingering for
   # yourself needs polkit to allow it without a password; if it doesn't, this
   # warns instead of failing the deploy.
   home.activation.enableLinger = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

@@ -29,8 +29,9 @@
   # short-circuits the guard and never picks up the var. envExtra is
   # unconditional, so new shells get it even inside a stale multiplexer.
   #
-  # TZ: the servers are standalone home-manager on Ubuntu, so the system zone
-  # isn't ours to set — this only covers our own shells and what they launch.
+  # TZ: on the servers this is standalone home-manager; the system zone belongs
+  # to twix (NixOS) or the Ubuntu install — this only covers our own shells and
+  # what they launch.
   programs.zsh.envExtra = ''
     export DIRENV_LOG_FORMAT=""
     export TZ="Europe/Berlin"

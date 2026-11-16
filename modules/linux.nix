@@ -24,10 +24,16 @@
       && . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
   '';
 
-  programs.zsh.shellAliases = {
-    # Debian/Ubuntu multiarch dir differs by arch (x86_64- vs aarch64-linux-gnu).
-    ntop = "LD_PRELOAD=/usr/lib/${pkgs.stdenv.hostPlatform.parsed.cpu.name}-linux-gnu/libnvidia-ml.so.1 nvitop -m";
-  };
+  programs.zsh.shellAliases =
+    let
+      # Ubuntu boxes (berghain, delta-*) need the driver's NVML preloaded; the
+      # multiarch dir differs by arch (x86_64- vs aarch64-linux-gnu). On the
+      # NixOS servers nvitop finds it in /run/opengl-driver on its own.
+      nvml = "/usr/lib/${pkgs.stdenv.hostPlatform.parsed.cpu.name}-linux-gnu/libnvidia-ml.so.1";
+    in
+    {
+      ntop = "LD_PRELOAD=$([ -e ${nvml} ] && echo ${nvml}) nvitop -m";
+    };
 
   # Fleet aliases so `ssh kitkat` works server-to-server, not just from the Mac.
   # Auth rides the Mac's forwarded agent; ForwardAgent keeps it alive per hop.
