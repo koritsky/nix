@@ -24,12 +24,5 @@
         dark = true;
       };
     };
-    jujutsu = {
-      enable = true;
-      settings.user = {
-        email = config.profile.email;
-        name = config.profile.gitName;
-      };
-    };
   };
 }

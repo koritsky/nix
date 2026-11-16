@@ -19,7 +19,6 @@
       bat.enable = true;
       fzf.enable = true;
       starship.enable = true;
-      helix.enable = true;
     };
   };
 }

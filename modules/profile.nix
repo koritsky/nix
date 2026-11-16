@@ -17,12 +17,12 @@
     email = lib.mkOption {
       type = lib.types.str;
       default = "koritcky@gmail.com";
-      description = "Email used for git/jujutsu commits.";
+      description = "Email used for git commits.";
     };
     gitName = lib.mkOption {
       type = lib.types.str;
       default = "Nikita Koritskii";
-      description = "Display name used for git/jujutsu commits.";
+      description = "Display name used for git commits.";
     };
     secrets = lib.mkOption {
       type = lib.types.bool;
