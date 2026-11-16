@@ -38,8 +38,6 @@ let
             "none"
             "-o"
             "BatchMode=yes"
-            # ~/.ssh/config adds a pile of LocalForwards to these hosts; they'd
-            # clash with the interactive sessions.
             "-o"
             "ClearAllForwardings=yes"
             "-o"

@@ -40,23 +40,11 @@
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-    settings =
-      builtins.mapAttrs
-        (_: HostName: {
-          inherit HostName;
-          User = "nikita";
-          ForwardAgent = true;
-        })
-        {
-          kitkat = "192.168.207.239";
-          sisyphos = "192.168.207.241";
-          renate = "192.168.207.246";
-          berghain = "192.168.207.244";
-          tresor = "192.168.207.242";
-          aboutblank = "192.168.207.247";
-          delta-dev1 = "192.168.144.35";
-          delta-emc1 = "172.30.0.40";
-        };
+    settings = builtins.mapAttrs (_: HostName: {
+      inherit HostName;
+      User = "nikita";
+      ForwardAgent = true;
+    }) (import ../lib/ssh-hosts.nix);
   };
 
   programs.yazi.keymap.mgr.prepend_keymap = [
