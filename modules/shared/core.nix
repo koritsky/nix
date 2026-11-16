@@ -44,6 +44,7 @@
     pkgs.ncdu
     pkgs.nh
     pkgs.prek
+    pkgs.gdrive3
     pkgs.sops
     pkgs.tealdeer
   ];
