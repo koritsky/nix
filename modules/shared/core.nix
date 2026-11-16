@@ -127,4 +127,8 @@
   };
 
   xdg.configFile."yazi/theme.toml".source = ../../files/yazi-theme.toml;
+
+  # btop writes its own default btop.conf the first time it exits, which would
+  # block activation on hosts where it ran before home-manager managed it.
+  xdg.configFile."btop/btop.conf".force = true;
 }
