@@ -29,10 +29,6 @@ in
   home.file.".aerospace.toml".source = ../files/aerospace.toml;
 
   home.packages = [
-    # Clickable desktop notifications for zellaude (macOS only). Without it the
-    # hook falls back to osascript, whose notifications can't focus the pane.
-    pkgs.terminal-notifier
-
     # Paste clipboard images as PNG. From nixpkgs rather than Homebrew —
     # /opt/homebrew is owned by the other user, so `brew install` fails for us.
     # Also bundled into clipssh; kept here so `pngpaste` works standalone too.

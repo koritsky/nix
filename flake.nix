@@ -23,9 +23,6 @@
     # the local key — github: would need a token).
     updog.url = "git+ssh://git@github.com/yaak-ai/updog?ref=main";
     updog.inputs.nixpkgs.follows = "nixpkgs";
-    # Prebuilt AI CLI tools (herdr) from cache.numtide.com, newer than nixpkgs.
-    # No nixpkgs follows: that would change the store paths and miss the cache.
-    llm-agents.url = "github:numtide/llm-agents.nix";
     # Prebuilt Rex + its home-manager module (services.rex runs the server on the
     # Linux hosts, reachable over Rex's built-in Tailscale). Only the snapshot
     # channel is published; flake.lock pins the exact release.
@@ -45,7 +42,6 @@
       stylix,
       deploy-rs,
       updog,
-      llm-agents,
       rex,
       ...
     }:
@@ -55,9 +51,6 @@
         sops-nix.homeManagerModules.sops
         stylix.homeModules.stylix
         { home.stateVersion = "26.05"; }
-        ({ pkgs, ... }: {
-          programs.herdr.package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.herdr;
-        })
       ];
 
       # deploy-rs's activate binary is a cache miss for us: deploy-rs.inputs.nixpkgs

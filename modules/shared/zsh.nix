@@ -7,13 +7,6 @@
 
 let
   envSecrets = import ../../lib/secrets.nix;
-
-  # iTerm2 shell integration (prompt marks, command status, `it2*` helpers).
-  # Pinned by hash; re-fetch + update the hash if iTerm changes the script.
-  itermIntegration = pkgs.fetchurl {
-    url = "https://iterm2.com/shell_integration/zsh";
-    hash = "sha256-kQJ8bVIh7nEjYJ6OWqiEDqIY+YWD5RbD1CXV+KKyDno=";
-  };
   secretToEnv = name: lib.toUpper (builtins.replaceStrings [ "-" ] [ "_" ] name);
 
   # `<tool> init zsh` output generated once at build time and sourced, instead
@@ -52,23 +45,12 @@ in
     completionInit = "autoload -Uz compinit && compinit -C";
 
     shellAliases = {
-      zl = "zellij";
-      zlm = "zl a main";
-      zla = "zl a --index 0";
       ysudo = "sudo yazi";
     };
 
     initContent = lib.mkMerge [
       (builtins.readFile ../../files/zsh-init.sh)
       exportSecrets
-      # Source iTerm2 shell integration only in iTerm sessions: TERM_PROGRAM
-      # locally, LC_TERMINAL over SSH (iTerm forwards LC_*). No-op elsewhere;
-      # the script also self-guards on interactive/non-tmux shells.
-      ''
-        if [ "$TERM_PROGRAM" = "iTerm.app" ] || [ "$LC_TERMINAL" = "iTerm2" ]; then
-          source ${itermIntegration}
-        fi
-      ''
       # Prebuilt replacements for the home-manager zsh integrations switched
       # off below; same guards and ordering as theirs (zoxide 851, fzf 910).
       (lib.mkOrder 851 "source ${initScript "zoxide" "init zsh ${lib.escapeShellArgs config.programs.zoxide.options}"}")
