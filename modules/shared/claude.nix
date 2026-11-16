@@ -157,6 +157,14 @@ in
     };
   };
 
+  # `cc` shadows the C compiler only when typed interactively; build tools
+  # exec cc directly and never see shell aliases.
+  programs.zsh.shellAliases = {
+    c = "claude";
+    cc = "claude --continue";
+    cr = "claude --resume";
+  };
+
   home.file.".claude/statusline.sh" = {
     executable = true;
     source = ../../files/statusline.sh;
