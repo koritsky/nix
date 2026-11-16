@@ -81,7 +81,19 @@
       # Let Atuin own Ctrl-R; fzf keeps Ctrl-T / Alt-C.
       historyWidget.command = "";
     };
-    gh.enable = true;
+    gh = {
+      enable = true;
+      # `gh stack`: stacked PRs. Patched (from egorchakov/nix-config) so PR
+      # bodies are just the commit body, without the "Stack created with
+      # GitHub Stacks CLI" footer.
+      extensions = [
+        (pkgs.gh-stack.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [ ../../files/patches/gh-stack-no-footer.patch ];
+          # Upstream tests require the attribution footer.
+          doCheck = false;
+        }))
+      ];
+    };
     lazygit.enable = true;
     ripgrep.enable = true;
     starship = {
