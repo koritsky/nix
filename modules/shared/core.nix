@@ -2,13 +2,13 @@
 
 {
   # Rebuild from the flake. On macOS the env is managed by nix-darwin (system +
-  # Homebrew + home-manager), so use darwin-rebuild; elsewhere it's standalone
-  # home-manager.
+  # Homebrew + home-manager); elsewhere it's standalone home-manager. nh shows
+  # a package diff before switching and asks for sudo itself on darwin.
   programs.zsh.shellAliases.nup =
-    if pkgs.stdenv.isDarwin then
-      "sudo -v && git -C ~/nix pull && sudo darwin-rebuild switch --flake ~/nix#Nikitas-MacBook-Pro"
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      "git -C ~/nix pull && nh darwin switch ~/nix -H Nikitas-MacBook-Pro"
     else
-      "git -C ~/nix pull && home-manager switch -b backup --flake ~/nix#${config.profile.name}";
+      "git -C ~/nix pull && nh home switch ~/nix -c ${config.profile.name} -b backup";
 
   # Auto-accept flake nixConfig (e.g. rmind/rbyte's extra-substituters) so
   # direnv doesn't hang on the interactive accept prompt. Written directly:
@@ -58,7 +58,7 @@
         filter_mode = "global";
       };
     };
-    bat.enable = true;
+    btop.enable = true;
     direnv = {
       enable = true;
       nix-direnv.enable = true;
@@ -81,7 +81,6 @@
       historyWidget.command = "";
     };
     gh.enable = true;
-    htop.enable = true;
     lazygit.enable = true;
     ripgrep.enable = true;
     starship = {

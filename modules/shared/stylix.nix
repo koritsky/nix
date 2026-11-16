@@ -16,7 +16,7 @@
       # mkDefault: headless hosts turn these off in modules/linux.nix.
       font-packages.enable = lib.mkDefault true;
       fontconfig.enable = lib.mkDefault true;
-      bat.enable = true;
+      btop.enable = true;
       fzf.enable = true;
       starship.enable = true;
     };

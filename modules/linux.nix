@@ -8,7 +8,7 @@
   # No fonts on headless boxes — the terminal font comes from the SSH client.
   # font-packages pulled nerd-fonts.jetbrains-mono plus stylix's default emoji
   # font (noto-fonts-color-emoji) into every server closure: ~1 GB of transfer
-  # for nothing. The base16 themes (helix/bat) only need the font *name*,
+  # for nothing. The base16 themes (btop/fzf/starship) only need the font *name*,
   # which stylix.fonts still provides.
   stylix.targets = {
     font-packages.enable = false;
