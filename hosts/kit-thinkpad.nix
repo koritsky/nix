@@ -15,4 +15,10 @@
   # Non-NixOS desktop: XDG_DATA_DIRS etc., so Nix-installed apps show up in the
   # launcher.
   targets.genericLinux.enable = true;
+
+  # Ghostty from nixpkgs. Themed and fonted by stylix. Needs the GPU drivers
+  # that targets.genericLinux.gpu (on by default above) links in — one-time
+  # `sudo …/non-nixos-gpu-setup`, printed by the first activation.
+  programs.ghostty.enable = true;
+  stylix.targets.ghostty.enable = true; # stylix autoEnable is off (shared/stylix.nix)
 }
