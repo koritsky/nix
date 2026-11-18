@@ -177,6 +177,8 @@
 
       homeConfigurations = {
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
+        # Ubuntu laptop, updated locally with `nup` (not in deploy.nodes).
+        kit-thinkpad = mkHome "x86_64-linux" ./hosts/kit-thinkpad.nix;
         # aarch64 delta boxes (NVIDIA Jetson / Ubuntu). Secrets off until the age
         # key is on the box — flip profile.secrets once
         # ~/.config/sops/age/keys.txt exists.
