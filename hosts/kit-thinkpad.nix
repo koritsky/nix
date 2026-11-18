@@ -7,6 +7,8 @@
   imports = [
     ../home.nix
     ../modules/rex-server.nix
+    # finanzamt + paperless: services, tailnet names, daily jobs.
+    ../modules/finanzamt.nix
   ];
 
   profile = {
