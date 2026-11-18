@@ -7,8 +7,8 @@
 
   profile = {
     name = "kit-thinkpad";
-    username = "kit-thinkpad";
-    homeDirectory = "/home/kit-thinkpad";
+    username = "kit";
+    homeDirectory = "/home/kit";
     # secrets = false; # until ~/.config/sops/age/keys.txt is on the laptop
   };
 
