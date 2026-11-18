@@ -9,7 +9,7 @@
     name = "kit-thinkpad";
     username = "kit";
     homeDirectory = "/home/kit";
-    # secrets = false; # until ~/.config/sops/age/keys.txt is on the laptop
+    secrets = false; # until ~/.config/sops/age/keys.txt is on the laptop
   };
 
   # Non-NixOS desktop: XDG_DATA_DIRS etc., so Nix-installed apps show up in the
