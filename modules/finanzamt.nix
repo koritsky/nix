@@ -169,8 +169,9 @@ in
         "bash scripts/db_backup_to_gdrive.sh";
     finanzamt-paperless-backup = job "finanzamt: back up paperless to Google Drive" [
       "FINANZAMT_PAPERLESS_HOST=local"
-      # sg: the user manager may predate kit joining the docker group.
-    ] "/usr/bin/sg docker -c 'bash scripts/paperless_backup_to_gdrive.sh'";
+      # Calls docker: needs kit's systemd user manager to have the docker group,
+      # i.e. to have started after kit joined it (a reboot does that).
+    ] "bash scripts/paperless_backup_to_gdrive.sh";
   }
   // lib.mapAttrs' (
     name: targets: lib.nameValuePair "tailnet-${name}" (tailnetNode name targets)
