@@ -1,9 +1,13 @@
 { ... }:
 
 {
-  # Ubuntu laptop. Shared modules only — not server-linux.nix / modules/linux.nix
-  # (Rex server, linger, fleet SSH aliases, /nasa keymap, no fonts).
-  imports = [ ../home.nix ];
+  # Ubuntu laptop, used mostly as a server from the Mac: the Rex server part of
+  # the servers (modules/rex-server.nix), but not server-linux.nix /
+  # modules/linux.nix (user nikita, fleet SSH aliases, /nasa keymap, no fonts).
+  imports = [
+    ../home.nix
+    ../modules/rex-server.nix
+  ];
 
   profile = {
     name = "kit-thinkpad";

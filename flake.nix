@@ -167,8 +167,13 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "pre-darwin"; # fresh ext: avoid colliding with stale *.hm-bak
             home-manager.sharedModules = sharedHomeModules;
-            # Servers that get the Mac's SSH agent in Rex (modules/darwin-rex.nix).
-            home-manager.extraSpecialArgs.rexHosts = fleet ++ [ "renate" ];
+            # Servers that get the Mac's SSH agent in Rex (modules/darwin-rex.nix),
+            # as host -> login user.
+            home-manager.extraSpecialArgs.rexHosts =
+              nixpkgs.lib.genAttrs (fleet ++ [ "renate" ]) (_: "nikita")
+              // {
+                kit-thinkpad = "kit";
+              };
             home-manager.users.nikitaak = import ./hosts/nikitaak.nix;
             home-manager.users.kortisky = import ./hosts/kortisky.nix;
           }

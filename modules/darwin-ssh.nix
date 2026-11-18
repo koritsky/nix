@@ -43,6 +43,11 @@ in
           }
       // {
         delta-evgenii.HostName = "172.30.0.132";
+        # Ubuntu laptop used as a server, over Tailscale (Tailscale SSH, no key).
+        kit-thinkpad = common // {
+          HostName = "kit-thinkpad.tailf5a5bb.ts.net";
+          User = "kit";
+        };
       };
   };
 }
