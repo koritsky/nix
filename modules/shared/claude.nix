@@ -141,6 +141,19 @@ in
           "Bash(git reset --hard:*)"
         ];
       };
+      # Owned by Nix, so the merge below drops hooks that tools add at runtime
+      # (upclaude, herdr left theirs behind). Rex's own hook is the only one.
+      hooks.SessionStart = [
+        {
+          hooks = [
+            {
+              type = "command";
+              command = "/bin/sh -c 'rex __internal session-start --agent claude 2>/dev/null || true'";
+              timeout = 5;
+            }
+          ];
+        }
+      ];
       statusLine = {
         type = "command";
         command = "bash ~/.claude/statusline.sh";
