@@ -16,6 +16,9 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
+    # UseKeychain is Apple-only; Nix's OpenSSH (deploy-rs, nix copy) would
+    # reject the whole file without this at the top
+    extraOptionOverrides.IgnoreUnknown = "UseKeychain";
     includes = [ "${config.home.homeDirectory}/.colima/ssh_config" ];
     settings = builtins.mapAttrs (
       _: HostName:
