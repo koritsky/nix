@@ -7,6 +7,6 @@
   berghain = "192.168.207.244";
   tresor = "192.168.207.242";
   aboutblank = "192.168.207.247";
-  "delta-devkit.kit" = "172.30.0.132";
-  "delta-devcar-v2.kit" = "172.30.0.154";
+  delta-devkit = "172.30.0.132";
+  delta-devcar = "172.30.0.154";
 }
