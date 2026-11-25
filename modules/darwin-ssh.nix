@@ -1,9 +1,8 @@
-{ config, lib, ... }:
+{ config, ... }:
 
 # ~/.ssh/config on the Mac. No LocalForwards: Rex covers the remote sessions,
 # and a one-off `ssh -L 8888:localhost:8888 kitkat` covers the rest.
 let
-  # Shared by the fleet and the root-login delta boxes.
   common = {
     IdentityFile = "~/.ssh/id_rsa";
     ForwardAgent = true;
@@ -18,36 +17,13 @@ in
     enable = true;
     enableDefaultConfig = false;
     includes = [ "${config.home.homeDirectory}/.colima/ssh_config" ];
-    settings =
-      builtins.mapAttrs (
-        _: HostName:
-        common
-        // {
-          inherit HostName;
-          User = "nikita";
-        }
-      ) (import ../lib/ssh-hosts.nix)
-      //
-        lib.mapAttrs
-          (
-            _: HostName:
-            common
-            // {
-              inherit HostName;
-              User = "root";
-            }
-          )
-          {
-            delta-d12 = "172.30.0.169";
-            delta-e20 = "172.30.0.177";
-          }
+    settings = builtins.mapAttrs (
+      _: HostName:
+      common
       // {
-        delta-evgenii.HostName = "172.30.0.132";
-        # Ubuntu laptop used as a server, over Tailscale (Tailscale SSH, no key).
-        kit-thinkpad = common // {
-          HostName = "kit-thinkpad.tailf5a5bb.ts.net";
-          User = "kit";
-        };
-      };
+        inherit HostName;
+        User = "nikita";
+      }
+    ) (import ../lib/ssh-hosts.nix);
   };
 }

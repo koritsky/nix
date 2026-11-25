@@ -7,7 +7,6 @@
   berghain = "192.168.207.244";
   tresor = "192.168.207.242";
   aboutblank = "192.168.207.247";
-  delta-dev1 = "192.168.144.35";
-  delta-emc1 = "172.30.0.40";
-  delta-devkit = "172.30.0.132";
+  "delta-devkit.kit" = "172.30.0.132";
+  "delta-devcar-v2.kit" = "172.30.0.154";
 }
