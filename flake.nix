@@ -99,7 +99,7 @@
         "aboutblank"
       ];
 
-      # Shared config for the aarch64 delta boxes (delta-dev1/delta-emc1).
+      # Shared config for the aarch64 delta boxes (delta-devkit/delta-devcar).
       mkDelta =
         name:
         mkHome "aarch64-linux" {
@@ -109,7 +109,7 @@
         };
 
       # system defaults to x86_64-linux (the bulk of the fleet); pass
-      # aarch64-linux for ARM boxes (e.g. the Jetson delta-dev1).
+      # aarch64-linux for ARM boxes (the delta boxes).
       mkEnvNode =
         {
           host,
@@ -184,11 +184,11 @@
         server-linux = mkHome "x86_64-linux" ./hosts/server-linux.nix;
         # Ubuntu laptop, updated locally with `nup` (not in deploy.nodes).
         kit-thinkpad = mkHome "x86_64-linux" ./hosts/kit-thinkpad.nix;
-        # aarch64 delta boxes (NVIDIA Jetson / Ubuntu). Secrets off until the age
-        # key is on the box — flip profile.secrets once
+        # aarch64 delta boxes (Yaak Embedded OS, Determinate Nix). Secrets off
+        # until the age key is on the box — flip profile.secrets once
         # ~/.config/sops/age/keys.txt exists.
-        delta-dev1 = mkDelta "delta-dev1";
-        delta-emc1 = mkDelta "delta-emc1";
+        delta-devkit = mkDelta "delta-devkit";
+        delta-devcar = mkDelta "delta-devcar";
         renate = mkHome "x86_64-linux" {
           imports = [
             ./hosts/server-linux.nix
@@ -221,10 +221,14 @@
             host = "renate";
             hmConfig = self.homeConfigurations.renate;
           };
-          # delta-dev1 / delta-emc1 are left out of `just deploy` for now (not
-          # reachable from here); their homeConfigurations stay buildable.
-          # Re-add with: mkEnvNode { host = "delta-dev1"; system =
-          # "aarch64-linux"; hmConfig = self.homeConfigurations.delta-dev1; }
-        };
+        }
+        // nixpkgs.lib.genAttrs [ "delta-devkit" "delta-devcar" ] (
+          host:
+          mkEnvNode {
+            inherit host;
+            system = "aarch64-linux";
+            hmConfig = self.homeConfigurations.${host};
+          }
+        );
     };
 }
