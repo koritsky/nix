@@ -198,6 +198,17 @@
           profile.secrets = false;
           services.updog.enable = true;
           services.updog.slackChannel = "C07U0RHPM17"; # ml-up-dog
+          # twix hosts with updog's collector (yaak-ai/twix#7): reached as the
+          # restricted `updog` user; berghain isn't in twix yet, so it stays on nikita
+          services.updog.collectorHosts = [
+            "aboutblank"
+            "kitkat"
+            "renate"
+            "sisyphos"
+            "tresor"
+            "delta-devkit"
+            "delta-devcar"
+          ];
         };
       }
       // nixpkgs.lib.genAttrs fleet (
