@@ -170,6 +170,8 @@ in
       skipWebFetchPreflight = true;
       includeGitInstructions = true;
       preferredNotifChannel = "notifications_disabled";
+      autoCompactEnabled = false;
+      idleCompaction = false;
       cleanupPeriodDays = 30;
       attribution = {
         commit = "";
