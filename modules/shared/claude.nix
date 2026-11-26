@@ -142,18 +142,26 @@ in
         ];
       };
       # Owned by Nix, so the merge below drops hooks that tools add at runtime
-      # (upclaude, herdr left theirs behind). Rex's own hook is the only one.
-      hooks.SessionStart = [
-        {
-          hooks = [
-            {
-              type = "command";
-              command = "/bin/sh -c 'rex __internal session-start --agent claude 2>/dev/null || true'";
-              timeout = 5;
-            }
-          ];
-        }
-      ];
+      # (upclaude, herdr left theirs behind). A hook you want must be listed here.
+      hooks.SessionStart =
+        map
+          (command: {
+            hooks = [
+              {
+                type = "command";
+                inherit command;
+                timeout = 5;
+              }
+            ];
+          })
+          (
+            [ "/bin/sh -c 'rex __internal session-start --agent claude 2>/dev/null || true'" ]
+            # rex-agent-archive (github.com/unknowntheory/rex-agent-archive,
+            # macOS only): records sessions so closed tabs can be resumed from
+            # the palette. Its install.sh adds this line at runtime, which the
+            # merge would drop.
+            ++ lib.optional pkgs.stdenv.hostPlatform.isDarwin "/bin/sh -c '\"$HOME/.config/rex/archive/agent-hook.sh\" claude 2>/dev/null || true'"
+          );
       statusLine = {
         type = "command";
         command = "bash ~/.claude/statusline.sh";
