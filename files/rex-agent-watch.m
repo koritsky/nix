@@ -94,6 +94,13 @@ int main(int argc, const char *argv[]) {
       exit(0);
     });
     dispatch_resume(termination);
+    // Notifications alone miss some relaunches (a Rex self-update left
+    // forwarding stopped while the new app ran), so re-check every 30s too.
+    [NSTimer scheduledTimerWithTimeInterval:30
+                                    repeats:YES
+                                      block:^(NSTimer *timer) {
+                                        refresh();
+                                      }];
     refresh();
     [[NSRunLoop mainRunLoop] run];
   }
