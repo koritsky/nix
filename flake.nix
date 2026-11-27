@@ -197,7 +197,21 @@
           profile.name = "renate";
           profile.secrets = false;
           services.updog.enable = true;
-          services.updog.slackChannel = "C07U0RHPM17"; # ml-up-dog
+          # alerts v2 on trial in ml-updog-v2 (main: C07U0RHPM17, ml-up-dog);
+          # names in plain text there, so no one is pulled into the channel
+          services.updog.slackChannel = "C0CM9K6C86Q"; # ml-updog-v2
+          services.updog.slackMention = false;
+          services.updog.slackOncall = [ "U06NKNZNB4H" ]; # nikita
+          services.updog.slackUsers = {
+            alex = "U0B32P3K2DA";
+            dmitry = "U0BLHVBMDQE";
+            evgenii = "U03PKBEULRF";
+            harsimrat = "UPVQNRPN0";
+            max = "U0B1U5CN2NM";
+            nikita = "U06NKNZNB4H";
+            parsa = "U0AC60ZS44B";
+            rune = "U0AQRMLEM5W";
+          };
           # twix hosts with updog's collector (yaak-ai/twix#7): reached as the
           # restricted `updog` user; berghain isn't in twix yet, so it stays on nikita
           services.updog.collectorHosts = [
